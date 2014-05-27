@@ -890,9 +890,6 @@ function displayDetalleNuevoPedidoEscaner() // Pantalla que contiene los articul
 
 function displayResumenNuevoPedido() // Pantalla que contiene los articulos del nuevo pedido y botones para añadirlos.
 {
-	if (localStorage['pantalla'] != "pedidosDetalleNuevo"){
-        $('#searchText').val("");
-    }
     
     localStorage["plantillas"] = "";
     localStorage["pantalla"] = "pedidosResumenNuevoPedido";
