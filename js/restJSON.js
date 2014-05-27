@@ -145,7 +145,9 @@ function cargaLlamadasWS(res){
 		
 		
 		//insertTiempos(0);
-		
+
+
+
 		restSecuritySettingsJSON();
  console.log("DANI ");
 		restAllItemsJSON(); //Nuevo ws que llama de golpe a todos los items.
@@ -1430,9 +1432,10 @@ function addLogisticChains(data){
 			   
 }
 
-
-
-function restAllOrdersJSON() {
+/*
+tmp => Indica si es una carga parcial de ordenes
+*/
+function restAllOrdersJSON(tmp) {
 
 	var f_ini=nowBD().substr(0,10);
 	
@@ -1683,7 +1686,10 @@ function addOrders(data){
 		var linea = {} ;
 		var lineas = new Array();
     var entradas=0;
-    
+
+    var tmp="";
+    if (localStorage['pModoCargaParcial'] != "" ) { tmp="_tmp";  }
+
     $.each(data.body, function() {
     	
 				pedido = {};
@@ -1708,16 +1714,16 @@ function addOrders(data){
 					pedido.idVendor=this.vendorId;
 					pedido.Observaciones='';
 					
-					querys[l]=getQueryInsertOrder(pedido); 
+					querys[l]=getQueryInsertOrder(pedido, tmp);
 					l++;
 					if (this.transactionId != null && this.transactionId!= "") {
             querys[l]="DELETE FROM ordersPendingDetail WHERE EXISTS (SELECT * FROM ordersPending as o WHERE o.idInternalOrder=ordersPendingDetail.idInternalOrder AND o.transactionCode='"+this.trasactionId+"')";
-  					console.log(querys[l]);
+  					//console.log(querys[l]);
             
             l++;
             
             querys[l]="DELETE FROM ordersPending WHERE transactionCode='"+this.transactionId+"' ";
-            console.log(querys[l]);
+            //console.log(querys[l]);
   					l++;
           }
 
@@ -1753,7 +1759,7 @@ function addOrders(data){
 								articulo.logisticsChainStatus=linea.logisticsChainStatus;
 								if (linea.logisticsChainStatus===undefined) { articulo.logisticsChainStatus=0; }
 		
-								querys[l]=getQueryInsertOrderDetail(articulo); 
+								querys[l]=getQueryInsertOrderDetail(articulo, tmp);
 								l++;
 
 								
@@ -1905,7 +1911,10 @@ vendorId	:	257
     var articulo = new Array();
 		var linea = {} ;
 		var lineas = new Array();
-    
+
+    var tmp="";
+    if (localStorage['pModoCargaParcial'] != "" ) { tmp="_tmp";  }
+
     $.each(data.body, function() {
     	
 				pedido = {};
@@ -1930,7 +1939,7 @@ vendorId	:	257
 					if (this.comments === undefined ) { pedido.name=""; }
 					else { pedido.name=this.comments; }
 					
-					querys[l]=getQueryInsertOrdersTemplates(pedido); 
+					querys[l]=getQueryInsertOrdersTemplates(pedido, tmp);
 					l++;
 
 					if (this.templateLines !== undefined) {
@@ -1961,7 +1970,7 @@ vendorId	:	257
                                 else { articulo.itemName=""; }
 								articulo.itemStatus=linea.itemStatus;
 		
-								querys[l]=getQueryInsertOrdersTemplatesDetail(articulo); 
+								querys[l]=getQueryInsertOrdersTemplatesDetail(articulo, tmp);
 								//console.log(querys[l]);
 								l++;
 		        }
@@ -2004,6 +2013,9 @@ vendorId	:	257
 				  	progress(parseInt(localStorage['porcentageCarga']), getEstadoCargaAsincrono(estado) );
 				  	
 				  	cargadoTotal(estado);
+                      if (localStorage['pModoCargaParcial'] != "") {  		
+				setInterval(pFinalizarCargaParcial(),3000);
+                      }
 			  	
 					});		
 

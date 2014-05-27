@@ -60,6 +60,11 @@ function progressTime(percent, clearTimeout) {
 
 
 $(document).on('pageinit', '#LoginPage', function () {
+    restPing();
+    setInterval(function () {
+    	    restPing();
+
+    	}, 30000);
 
     $('input').focus();
     localStorage["pantalla_anterior"] = "";
@@ -1368,6 +1373,11 @@ $(document).on('pageinit', '#LoginPage', function () {
             //$('#pGridPedidos').data('kendoGrid').refresh();
 
             // Diria que hay que llamar a RestService y recargar
+
+        }else if (localStorage["pantalla"] == "pedidos_plantillas") {
+            
+            $("#pedidosDialogRefrescar").popup("close");
+            pCargarParcialPlantillas();
 
         } else if (localStorage["pantalla"] == "pedidosDetalle") {
 
