@@ -2162,6 +2162,62 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_pag_max_row"] = mr;
             localStorage["pedidos_pag_last"] = Math.ceil(dataDet.length / parseInt(mr));
             displayPlantillasNuevoPedido();
+            
+        }else if (localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
+
+            console.log("ESTAMOS DENTRO DE LISTA DE CENTROS");
+
+            var textSerch = $('#searchText').val();
+
+            console.log("VALOR DEL FILTRO LISTA DE CENTROS " + textSerch);
+
+            var gridDet = $("#pGridNuevoPedido").data("kendoGrid");
+
+            var filterDet = {
+                logic: "or",
+                filters: [{
+                    field: 'cod_pedid',
+                    operator: "contains",
+                    value: textSerch
+                }, {
+                    field: 'nom_pedid',
+                    operator: "contains",
+                    value: textSerch
+                }, {
+                    field: 'uds',
+                    operator: "contains",
+                    value: textSerch
+                }, {
+                    field: 'cad_log',
+                    operator: "contains",
+                    value: textSerch
+                }, {
+                    field: 'totales',
+                    operator: "contains",
+                    value: textSerch
+                }, {
+                    field: 'precios',
+                    operator: "contains",
+                    value: textSerch
+                }]
+            };
+
+            gridDet.dataSource.filter(filterDet);
+
+            console.log("SEARCH Centros: Pulsado tecla" + textSerch);
+
+            event.stopPropagation();
+
+            var dataSourceDetalle = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
+            var filtersDetalle = dataSourceDetalle.filter();
+            var allDataDet = dataSourceDetalle.data();
+            var queryDet = new kendo.data.Query(allDataDet);
+            var dataDet = queryDet.filter(filtersDetalle).data;
+
+            localStorage["pedidos_detalle_pag_act"] = 1;
+            localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"]);
+            localStorage["pedidos_detalle_pag_last"] = Math.ceil(dataDet.length / parseInt(localStorage["pedidos_detalle_pag_max_row"]));
+            displayResumenNuevoPedido();
         }
 
 });
@@ -2334,7 +2390,20 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             displayDetalleAnterior();
 
+        } else if (localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
+
+            var grid = $("#pGridNuevoPedido").data("kendoGrid");
+            grid.dataSource.filter([]);
+            var dataSource = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
+            var allData = dataSource.data();
+
+            localStorage["pedidos_detalle_pag_act"] = 1;
+            localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"]);
+            localStorage["pedidos_detalle_pag_last"] = Math.ceil(allData.length / parseInt(localStorage["pedidos_detalle_pag_max_row"]));
+
+            //displayResumenNuevoPedido();
         }
+
         
         
     });

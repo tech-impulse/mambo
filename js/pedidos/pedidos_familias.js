@@ -194,10 +194,7 @@ function pMostrarArticulos(param) {
                         width: '8%'
                     }]
                 });
-
-
-
-
+                
                 $('.keyboard').blur(); //escondemos el teclado                    
                 $('.k-grid-pager').hide();
 
@@ -207,10 +204,19 @@ function pMostrarArticulos(param) {
 
                 if (localStorage["pedidos_pag_act"] > 1) {
                     console.log("Pag. actual del detalle es "+localStorage['pedidos_pag_act']);
+                    
                     var grid = $("#pGridArticulos").data("kendoGrid");
                     grid.dataSource.page(parseInt(localStorage['pedidos_pag_act']));
+                    
                     localStorage["pedidos_pag_max_row"] = mr;
                     localStorage["pedidos_pag_last"] = Math.ceil(n_reg / mr);
+                    
+                        if(localStorage["columnaOrdena"]=="cod_articulo"||localStorage["columnaOrdena"]=="referencia"||localStorage["columnaOrdena"]=="nombre"||localStorage["columnaOrdena"]=="can_pedida"||localStorage["columnaOrdena"]=="stock"){                   
+                    console.log("Hemos entrado en paginacion para ordenar "+ localStorage["columnaOrdena"] +" "+ localStorage['imagenOrdenacion'] );
+                    pOrdenacionArt("pGridArticulos", localStorage["columnaOrdena"], localStorage['imagenOrdenacion'],"string" );
+                    }else{
+                    localStorage.setItem('sortgrid', "0");
+                    }
 
                 } else {
                     localStorage["pedidos_pag_act"] = 1;
@@ -225,14 +231,50 @@ function pMostrarArticulos(param) {
             }, errorMostrar);
 
         console.log("Query Finalizada");
-        localStorage.setItem('sortgrid', "0");
+        //localStorage.setItem('sortgrid', "0");
 
     });
+}
+
+function pOrdenacionArt(Grid, nombreColumn, nombreImg, tipo) {//mantiene la ordenacion de la grid cuando se modifica el articulo
+
+    var aux = localStorage['mantenerOrdenacionGrid'];
+
+    switch (aux) {
+    case "0":
+        var tipoOrdenacion = "desc";
+        var grid = $("#" + Grid).data("kendoGrid");
+        grid.dataSource.sort({
+            field: nombreColumn,
+            type: tipo,
+            dir: "desc"
+        });
+        grid.refresh();
+        $('#' + nombreImg).attr("src", "./images/sort_desc.png");
+        break;
+    case "1":
+        var tipoOrdenacion = "asc";
+        var grid = $("#" + Grid).data("kendoGrid");
+        grid.dataSource.sort({
+            field: nombreColumn,
+            type: tipo,
+            dir: "asc"
+        });
+        grid.refresh();
+        $('#' + nombreImg).attr("src", "./images/sort_asc.png");
+        break;
+    case "2":
+        $("#" + Grid).data("kendoGrid").dataSource.sort({});
+        $('#' + nombreImg).attr("src", "./images/sort_both.png");
+        break;
+    }
+
 }
 
 function pOrdenacionArticulos(Grid, nombreColumn, nombreImg, tipo) {
 
     var aux = localStorage.getItem('sortgrid');
+    localStorage['mantenerOrdenacionGrid']=aux;//guardamos la ordenacion que tenemos ahora mismo para recuperarla en caso que se pagine
 
     switch (aux) {
     case "0":
@@ -245,6 +287,7 @@ function pOrdenacionArticulos(Grid, nombreColumn, nombreImg, tipo) {
         });
         grid.refresh();
         localStorage.setItem('sortgrid', "1");
+        localStorage['imagenOrdenacion'] = nombreImg;
         $('#' + nombreImg).attr("src", "./images/sort_desc.png");
         localStorage["columnaOrdena"] = nombreColumn;
         break;
@@ -260,17 +303,18 @@ function pOrdenacionArticulos(Grid, nombreColumn, nombreImg, tipo) {
         localStorage.setItem('sortgrid', "2");
         $('#' + nombreImg).attr("src", "./images/sort_asc.png");
         localStorage["columnaOrdena"] = nombreColumn;
+        localStorage['imagenOrdenacion'] = nombreImg;
         break;
     case "2":
         $("#" + Grid).data("kendoGrid").dataSource.sort({});
         localStorage.setItem('sortgrid', "0");
         $('#' + nombreImg).attr("src", "./images/sort_both.png");
         localStorage["columnaOrdena"] = nombreColumn;
+        localStorage['imagenOrdenacion'] = nombreImg;
         break;
     }
 
 }
-
 function pMostrarFiltroFamilias() {
 
 
