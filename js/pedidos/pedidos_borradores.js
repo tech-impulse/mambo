@@ -46,15 +46,11 @@ function pMostrarTodosBorradores() {
           	 grid.destroy();		
 				  }
 				  
-			  	localStorage["pedidos_pag_act"]=1;
+			  	    localStorage["pedidos_pag_act"]=1;
 					localStorage["pedidos_pag_max_row"]=localStorage.getItem("max_row_per_pag");
 					var mr =parseInt(localStorage["pedidos_pag_max_row"]);
-					
 					localStorage["pedidos_pag_last"]=	Math.ceil(n_reg / parseInt(localStorage["pedidos_pag_max_row"]) );
-				  
-					console.log("Numero max por pag TODOS BORRADORES: filas xpagina"+localStorage.getItem("max_row_per_pag") + " " + localStorage["pedidos_pag_act"] + " / " + localStorage["pedidos_pag_last"] + " = " + mr );
-					console.log("Numero de Registros Encontrados " + n_reg);
-					
+                
 					 //TRADUCCIONES GRID 
 	 				var nume = localStorage.getItem('num');
 					var infor = localStorage.getItem('info');
@@ -791,11 +787,11 @@ function pMostrarDetalleBorrador(data, show)
 					            	schema: {
 										        model: {	
 										            fields: {
-										                cod_articulo: { type: "integer" },
+										                cod_articulo: { type: "string" },
 										                nom_articulo: { type: "string" },
-										                cant_pedida: { type: "integer" },
+										                cant_pedida: { type: "string" },
 										                cadena_logistica: {type: "string"},
-										                unidades_total: {type: "integer"}
+										                unidades_total: {type: "string"}
 										            }
 									        	}
 									      },
@@ -850,8 +846,6 @@ function pMostrarDetalleBorrador(data, show)
 					          
 					          $('.k-grid-pager').hide();
 					          
-                		//if (localStorage["pantalla"]=="pedidos_plantillas") { displayPlantillasDetalle();	} 
-										//else { displayPedidoPlantillasDetalle(); }
 
  										displayDetalleBorradores();
         						

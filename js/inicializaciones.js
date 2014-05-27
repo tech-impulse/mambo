@@ -18,38 +18,40 @@ Barra de progreso del time out.
 
 $(document).on('pageinit', '#progressPage', function () {
 
-    var tm="";
-    var ts="";
+    var tm = "";
+    var ts = "";
     kendo.culture("es-ES");
-    
-    localStorage['tcarga']=0;
-    
-     $("#progressBarTime").kendoProgressBar({
-                min: 0,
-                max: (localStorage['maxtime'] * 2),
-                type: "percent"
-     });
+
+    localStorage['tcarga'] = 0;
+
+    $("#progressBarTime").kendoProgressBar({
+        min: 0,
+        max: (localStorage['maxtime'] * 2),
+        type: "percent"
+    });
 
     var pb = $("#progressBarTime").data("kendoProgressBar");
     pb.value(0);
     var interval = setInterval(function () {
-        
-        localStorage['tcarga']=parseInt(localStorage['tcarga']) + 5000;
-        pb.value(localStorage['tcarga'] );
+
+        localStorage['tcarga'] = parseInt(localStorage['tcarga']) + 5000;
+        pb.value(localStorage['tcarga']);
         //console.log("BARRA TIEMPO ==> " + localStorage['tcarga'] + "MAX == " +  localStorage['maxtime']);
     }, 5000);
 
 });
 
-               
+
 function progressTime(percent, clearTimeout) {
 
     var progressBarWidth = percent * $('#progressBarTime').width() / 100;
 
-    console.log("TIEMPO!!!!! "+percent);
-    
-    $('#progressBarTime').find('div').animate({ width: progressBarWidth }, 500); 
-    $('#progressBarTime').find('div').html(clearTimeout );
+    console.log("TIEMPO!!!!! " + percent);
+
+    $('#progressBarTime').find('div').animate({
+        width: progressBarWidth
+    }, 500);
+    $('#progressBarTime').find('div').html(clearTimeout);
 
 
 }
@@ -156,33 +158,33 @@ $(document).on('pageinit', '#LoginPage', function () {
 
         db.transaction(function (transaction) {
 
-                    var sqlS = "SELECT COUNT(*) as n FROM items ";
+            var sqlS = "SELECT COUNT(*) as n FROM items ";
 
-                    transaction.executeSql(sqlS, undefined,
-                        function (transaction, result) {
-                            if (result.rows.item(0).n > 0) {
-                                 $("#cargaDialogTextAC").html("Si desea recargar los datos pulse Aceptar.<br>Para continuar con los datos anteriores a la carga pulse cancelar.");
-                                 setTimeout('$("#cargaDialogAC").popup("open");', 2000);
+            transaction.executeSql(sqlS, undefined,
+                function (transaction, result) {
+                    if (result.rows.item(0).n > 0) {
+                        $("#cargaDialogTextAC").html("Si desea recargar los datos pulse Aceptar.<br>Para continuar con los datos anteriores a la carga pulse cancelar.");
+                        setTimeout('$("#cargaDialogAC").popup("open");', 2000);
 
-                            } else {
+                    } else {
 
-                                getDescripcionAviso("NuncaCargado");
-                                setTimeout('$("#cargaDialogA").popup("open");', 2000);
+                        getDescripcionAviso("NuncaCargado");
+                        setTimeout('$("#cargaDialogA").popup("open");', 2000);
 
-                            }
+                    }
 
 
-                        });
                 });
+        });
 
 
     });
 
     $('#btnCargaDialogAOk').unbind('click').bind('click', function () {
 
-            $("#cargaDialogA").popup("close");
-            window.location.replace('./index.html');
-     });
+        $("#cargaDialogA").popup("close");
+        window.location.replace('./index.html');
+    });
 
     $('#btnCargaDialogOkAC').unbind('click').bind('click', function () {
 
@@ -190,7 +192,7 @@ $(document).on('pageinit', '#LoginPage', function () {
         console.log("-BOTON ACEPTAR--------------------------------->");
         $("#cargaDialogAC").popup("close");
 
-        localStorage['tcarga']=-3000;
+        localStorage['tcarga'] = -3000;
         setTimeout('recargaTotal();', 3000);
 
 
@@ -425,7 +427,7 @@ $(document).on('pageinit', '#LoginPage', function () {
     $('#mDialogAOk').unbind('click').bind('click', function () {
 
 
-                $("#mDialogA").popup("close");
+        $("#mDialogA").popup("close");
     });
 
 
@@ -623,190 +625,6 @@ $(document).on('pageinit', '#LoginPage', function () {
         }
     });
 
-    /////////////////////////////////////////////////////////////////////////////////////
-    //Filtro de la cabecera, cuando escribimos algun caracter se crean los filtros
-    $('#searchText').keyup(function (event) {
-
-        var charCode = event.charCode || event.keyCode;
-
-        if (localStorage["pantalla"] == "emitidos") {
-
-
-            console.log("ESTAMOS DENTRO DE PEDIDOS");
-
-            var textSerch = $('#searchText').val();
-
-            var grid = $("#pGridPedidos").data("kendoGrid");
-
-            var filter = {
-                logic: "or",
-                filters: [
-                    {
-                        field: 'cod_pedid',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cod_centr',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cod_proveedo',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cod_zona',
-                        operator: "contains",
-                        value: textSerch
-                    }
-              ]
-            };
-            grid.dataSource.filter(filter);
-
-            console.log("SEARCH pedidos: Pulsado tecla" + textSerch);
-
-            event.stopPropagation();
-
-            var dataSource = $("#pGridPedidos").data("kendoGrid").dataSource;
-            var filters = dataSource.filter();
-            var allData = dataSource.data();
-            var query = new kendo.data.Query(allData);
-            var dataa = query.filter(filters).data;
-
-            //Refrescamos los botones de paginacion
-            localStorage["pedidos_pag_act"] = 1;
-            var maxRowPag = localStorage.getItem("max_row_per_pag");
-            localStorage["pedidos_pag_last"] = Math.ceil(parseInt(dataa.length) / parseInt(maxRowPag));
-
-            console.log("PAGINACION REFRESCO PEDIDOS " + localStorage["pedidos_pag_act"] + " " + maxRowPag + " " + localStorage["pedidos_pag_last"]);
-
-
-
-
-            activate_buttons_footer("", "", "", "", "");
-
-        } else if (localStorage["pantalla"] == "pedidosDetalle") {
-
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
-
-            var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
-
-            var gridDet = $("#pGridPedidosDet").data("kendoGrid");
-
-            var filterDet = {
-                logic: "or",
-                filters: [
-                    {
-                        field: 'cod_articulo',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'nom_articulo',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cant_pedida',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cadena_logistica',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'unidades_total',
-                        operator: "contains",
-                        value: textSerch
-                    }
-              ]
-            };
-
-            gridDet.dataSource.filter(filterDet);
-
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
-
-            event.stopPropagation();
-
-            var dataSourceDetalle = $("#pGridPedidosDet").data("kendoGrid").dataSource;
-            var filtersDetalle = dataSourceDetalle.filter();
-            var allDataDet = dataSourceDetalle.data();
-            var queryDet = new kendo.data.Query(allDataDet);
-            var dataDet = queryDet.filter(filtersDetalle).data;
-
-            localStorage["pedidos_detalle_pag_act"] = 1;
-            localStorage["pedidos_detalle_pag_max_row"] = localStorage["max_row_per_pag"] - 2;
-            localStorage["pedidos_detalle_pag_last"] = Math.ceil(dataDet.length / localStorage["pedidos_detalle_pag_max_row"]);
-
-
-
-        } else if (localStorage["pantalla"] == "borradoresDetalle") {
-
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
-
-            var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
-
-            var gridDet = $("#pGridDetalleBorrador").data("kendoGrid");
-
-            var filterDet = {
-                logic: "or",
-                filters: [
-                    {
-                        field: 'cod_articulo',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'nom_articulo',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cant_pedida',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'cadena_logistica',
-                        operator: "contains",
-                        value: textSerch
-                    },
-                    {
-                        field: 'unidades_total',
-                        operator: "contains",
-                        value: textSerch
-                    }
-              ]
-            };
-
-            gridDet.dataSource.filter(filterDet);
-
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
-
-            event.stopPropagation();
-
-            var dataSourceDetalle = $("#pGridDetalleBorrador").data("kendoGrid").dataSource;
-            var filtersDetalle = dataSourceDetalle.filter();
-            var allDataDet = dataSourceDetalle.data();
-            var queryDet = new kendo.data.Query(allDataDet);
-            var dataDet = queryDet.filter(filtersDetalle).data;
-
-            localStorage["pedidos_detalle_pag_act"] = 1;
-            localStorage["pedidos_detalle_pag_max_row"] = localStorage["max_row_per_pag"] - 2;
-            localStorage["pedidos_detalle_pag_last"] = Math.ceil(dataDet.length / localStorage["pedidos_detalle_pag_max_row"]);
-
-
-
-        }
-    });
 
     $(document).on("swipeleft", "", function () {
         if ($("#pBtnPagNext").css("visibility") == "visible") {
@@ -873,10 +691,9 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             localStorage["pedidos_detalle_pag_act"] = parseInt(localStorage["pedidos_detalle_pag_act"]) + 1;
             if ($("#fbtn5").css("display") == "none" && $("#fbtn1").css("display") == "none") {
-                
+
                 displayModificarPlantilla();
-            }
-            else {
+            } else {
                 displayDetalleNuevoPedido();
             }
 
@@ -1056,8 +873,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             if ($("#fbtn5").css("display") == "none" && $("#fbtn1").css("display") == "none") {
                 displayModificarPlantilla();
-            }
-            else {
+            } else {
                 displayDetalleNuevoPedido();
             }
 
@@ -1454,14 +1270,13 @@ $(document).on('pageinit', '#LoginPage', function () {
             //$.mobile.changePage('#menuPrincipal');
             pMostrarPedidos();
         } else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
-            if(localStorage['pantallaAnterior']== "pedidoNuevoAnteriores")
-            {
+            if (localStorage['pantallaAnterior'] == "pedidoNuevoAnteriores") {
                 displayPedidosAnterioresNuevoPedido();
-                localStorage['pantallaAnterior']= "";
+                localStorage['pantallaAnterior'] = "";
             } else {
-            var grid = $("#pGridPlantillas").data("kendoGrid");
-            grid.dataSource.page(localStorage['pedidos_pag_act']);
-            displayPedidoPlantillas();
+                var grid = $("#pGridPlantillas").data("kendoGrid");
+                grid.dataSource.page(localStorage['pedidos_pag_act']);
+                displayPedidoPlantillas();
             }
         } else if ((localStorage["pantalla"] == "pedidos_plantillas_detalle") && (localStorage["plantillas"] == "plantillas")) {
             //pRellenarGridNuevoPedido();
@@ -1594,16 +1409,14 @@ $(document).on('pageinit', '#LoginPage', function () {
         $("#pedidosDialogRefrescar").popup("close");
 
     });
-
+    
+    /////////////////////////////////////////////////////////////////////////////////////
+    //Filtro de la cabecera 
     $('#searchText').keyup(function (event) {
 
         var charCode = event.charCode || event.keyCode;
-        //var code = (event.keyCode ? event.keyCode : event.which);
 
         if (localStorage["pantalla"] == "emitidos") {
-
-
-            console.log("ESTAMOS DENTRO DE PEDIDOS");
 
             var textSerch = $('#searchText').val();
 
@@ -1631,8 +1444,6 @@ $(document).on('pageinit', '#LoginPage', function () {
             };
             grid.dataSource.filter(filter);
 
-            console.log("SEARCH pedidos: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSource = $("#pGridPedidos").data("kendoGrid").dataSource;
@@ -1650,12 +1461,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
         } else if (localStorage["pantalla"] == "pedidosDetalle") {
 
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
-
             var gridDet = $("#pGridPedidosDet").data("kendoGrid");
 
             var filterDet = {
@@ -1685,8 +1491,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridDet.dataSource.filter(filterDet);
 
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridPedidosDet").data("kendoGrid").dataSource;
@@ -1701,14 +1505,95 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             displayDetail();
 
-        } else if (localStorage["pantalla"] == "pedidos_plantillas") {
-
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
+        }else if (localStorage["pantalla"] == "pedidosBorradores") {
 
             var textSerch = $('#searchText').val();
+            var gridDet = $("#pGridBorradores").data("kendoGrid");
 
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
+            var filterDet = {
+                logic: "or",
+                filters: [
+                    {
+                        field: 'centroCompra',
+                        operator: "contains",
+                        value: textSerch
+                    },{
+                        field: 'proveedor',
+                        operator: "contains",
+                        value: textSerch
+                    },{
+                        field: 'username',
+                        operator: "contains",
+                        value: textSerch
+                    }]
+            };
 
+            gridDet.dataSource.filter(filterDet);
+            
+            event.stopPropagation();
+
+            var dataSourceDetalle = $("#pGridBorradores").data("kendoGrid").dataSource;
+            var filtersDetalle = dataSourceDetalle.filter();
+            var allDataDet = dataSourceDetalle.data();
+            var queryDet = new kendo.data.Query(allDataDet);
+            var dataDet = queryDet.filter(filtersDetalle).data;
+
+            localStorage["pedidos_pag_act"]=1;
+            localStorage["pedidos_pag_max_row"]=parseInt(localStorage.getItem("max_row_per_pag"));
+            localStorage["pedidos_pag_last"]=	Math.ceil(dataDet.length / parseInt(localStorage["pedidos_pag_max_row"]) );
+            displayBorradores(); 
+
+
+        }else if (localStorage["pantalla"] == "borradoresDetalle") {
+
+            var textSerch = $('#searchText').val();
+            var gridDet = $("#pGridDetalleBorrador").data("kendoGrid");
+
+            var filterDet = {
+                logic: "or",
+                filters: [
+                    {
+                        field: 'cod_articulo',
+                        operator: "contains",
+                        value: textSerch
+                    },{
+                        field: 'nom_articulo',
+                        operator: "contains",
+                        value: textSerch
+                    },{
+                        field: 'cant_pedida',
+                        operator: "contains",
+                        value: textSerch
+                    },{
+                        field: 'cadena_logistica',
+                        operator: "contains",
+                        value: textSerch
+                    },{
+                        field: 'unidades_total',
+                        operator: "contains",
+                        value: textSerch
+                    }]
+            };
+
+            gridDet.dataSource.filter(filterDet);
+            
+            event.stopPropagation();
+
+            var dataSourceDetalle = $("#pGridDetalleBorrador").data("kendoGrid").dataSource;
+            var filtersDetalle = dataSourceDetalle.filter();
+            var allDataDet = dataSourceDetalle.data();
+            var queryDet = new kendo.data.Query(allDataDet);
+            var dataDet = queryDet.filter(filtersDetalle).data;
+
+            localStorage["pedidos_detalle_pag_act"] = 1;
+            localStorage["pedidos_detalle_pag_max_row"] = localStorage["max_row_per_pag"] - 2;
+            localStorage["pedidos_detalle_pag_last"] = Math.ceil(dataDet.length / localStorage["pedidos_detalle_pag_max_row"]);
+            displayDetalleBorradores();
+
+
+        } else if (localStorage["pantalla"] == "pedidos_plantillas") {
+
+            var textSerch = $('#searchText').val();
             var gridDet = $("#pGridPlantillas").data("kendoGrid");
 
             var filterDet = {
@@ -1734,8 +1619,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridDet.dataSource.filter(filterDet);
 
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourcePlan = $("#pGridPlantillas").data("kendoGrid").dataSource;
@@ -1747,21 +1630,13 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_pag_act"] = 1;
             localStorage["pedidos_pag_max_row"] = localStorage.getItem("max_row_per_pag");
             var mr = parseInt(localStorage["pedidos_pag_max_row"]);
-
             localStorage["pedidos_pag_last"] = Math.ceil(dataPlan.length / parseInt(localStorage["pedidos_pag_max_row"]));
-
-            console.log("Numero max por pag TODAS PLANTILLAS : filas xpagina" + localStorage.getItem("max_row_per_pag") + " " + localStorage["pedidos_pag_act"] + " / " + localStorage["pedidos_pag_last"] + " = " + mr);
 
             displayPedidoPlantillas();
 
         } else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
 
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
-
             var gridPlanDet = $("#pGridNuevoPedidoPlantilla").data("kendoGrid");
 
             var filterPlanDet = {
@@ -1791,8 +1666,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridPlanDet.dataSource.filter(filterPlanDet);
 
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourceNuevoPedPlan = $("#pGridNuevoPedidoPlantilla").data("kendoGrid").dataSource;
@@ -1806,18 +1679,13 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_detalle_pag_max_row"] = localStorage["max_row_per_pag"] - 2;
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(dataNuevoPedPlan.length / localStorage["pedidos_detalle_pag_max_row"]);
 
-            var mr = parseInt(localStorage["pedidos_detalle_pag_max_row"]);
+            //var mr = parseInt(localStorage["pedidos_detalle_pag_max_row"]);
 
             displayPedidoPlantillasDetalle();
 
         } else if (localStorage["pantalla"] == "pedidoNuevoAnteriores") {
 
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
-
             var gridPlanDet = $("#pGridPedidosAnteriores").data("kendoGrid");
 
             var filterPlanDet = {
@@ -1849,23 +1717,15 @@ $(document).on('pageinit', '#LoginPage', function () {
             var queryDet = new kendo.data.Query(allDataNuevoPedPlam);
             var dataNuevoPedPlan = queryDet.filter(filtersPlan).data;
 
-            var mr = parseInt(localStorage.getItem("max_row_per_pag") -2); // Una fila menos debido a los labels superiores.
+            var mr = parseInt(localStorage.getItem("max_row_per_pag") - 2); // Una fila menos debido a los labels superiores.
             localStorage["pedidos_pag_act"] = 1;
             localStorage["pedidos_pag_max_row"] = parseInt(mr);
-            
             localStorage["pedidos_pag_last"] = Math.ceil(parseInt(dataNuevoPedPlan.length) / parseInt(mr));
-
-
             displayPedidosAnterioresNuevoPedido();
 
         } else if (localStorage["pantalla"] == "pedidosDetalleNuevo") {
 
-            console.log("ESTAMOS DENTRO DE NUEVO PEDIDOS DETALLE");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO NUEVO DETALLE " + textSerch);
-
             var gridDet = $("#pGridNuevoPedido").data("kendoGrid");
             //var gridDet = $('#pGridNuevoPedido').data('kendoGrid').dataSource.read();
 
@@ -1900,8 +1760,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridDet.dataSource.filter(filterDet);
 
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
@@ -1920,14 +1778,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
         } else if (localStorage["pantalla"] == "insertarArticulos") {
 
-            console.log("ESTAMOS DENTRO DE PEDIDOS DETALLE");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DETALLE " + textSerch);
-            
-
-            
             var gridArt = $("#pGridArticulos").data("kendoGrid");
 
             var filterDet = {
@@ -1955,11 +1806,9 @@ $(document).on('pageinit', '#LoginPage', function () {
                 }]
             };
 
-            
+
             console.log(filterDet);
             gridArt.dataSource.filter(filterDet);
-
-            console.log("SEARCH Pedidos detalle: Pulsado tecla" + textSerch);
 
             event.stopPropagation();
 
@@ -1977,12 +1826,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
         } else if (localStorage["pantalla"] == "nuevo_proveedores") {
 
-            console.log("ESTAMOS DENTRO DE LISTA DE PROVEEDORES");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO LISTA DE PROVEEDORES " + textSerch);
-
             var gridDet = $("#pGridProveedores").data("kendoGrid");
 
             var filterDet = {
@@ -2004,8 +1848,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridDet.dataSource.filter(filterDet);
 
-            console.log("SEARCH Proveedores: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridProveedores").data("kendoGrid").dataSource;
@@ -2013,22 +1855,17 @@ $(document).on('pageinit', '#LoginPage', function () {
             var allDataDet = dataSourceDetalle.data();
             var queryDet = new kendo.data.Query(allDataDet);
             var dataDet = queryDet.filter(filtersDetalle).data;
-            
+
             var mr = parseInt(localStorage.getItem("max_row_per_pag") - 2); // -1 debido a los labels superiores
             localStorage["pedidos_pag_act"] = 1;
             localStorage["pedidos_pag_max_row"] = mr;
-            localStorage["pedidos_pag_last"] = Math.ceil(dataDet.length/ mr);
+            localStorage["pedidos_pag_last"] = Math.ceil(dataDet.length / mr);
 
             displayProviders();
 
         } else if (localStorage["pantalla"] == "pedidosDetalleAnterior") {
 
-            console.log("ESTAMOS DENTRO DE DETALLE DE PEDIDO ANTERIOR");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO DE DETALLE DE PEDIDO ANTERIOR " + textSerch);
-
             var gridDet = $("#pGridPedidosDet").data("kendoGrid");
 
             var filterDet = {
@@ -2058,8 +1895,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridDet.dataSource.filter(filterDet);
 
-            console.log("SEARCH Detalle Anterior: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridPedidosDet").data("kendoGrid").dataSource;
@@ -2067,22 +1902,16 @@ $(document).on('pageinit', '#LoginPage', function () {
             var allDataDet = dataSourceDetalle.data();
             var queryDet = new kendo.data.Query(allDataDet);
             var dataDet = queryDet.filter(filtersDetalle).data;
-            
-             localStorage["pedidos_detalle_pag_act"] = 1;
+
+            localStorage["pedidos_detalle_pag_act"] = 1;
             localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"]);
-            
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(dataDet.length / parseInt(localStorage["pedidos_detalle_pag_max_row"]));
 
             displayDetalleAnterior();
 
         } else if (localStorage["pantalla"] == "nuevo_pedido") {
 
-            console.log("ESTAMOS DENTRO DE LISTA DE CENTROS");
-
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO LISTA DE CENTROS " + textSerch);
-
             var gridDet = $("#pGridCentros").data("kendoGrid");
 
             var filterDet = {
@@ -2095,8 +1924,6 @@ $(document).on('pageinit', '#LoginPage', function () {
             };
 
             gridDet.dataSource.filter(filterDet);
-
-            console.log("SEARCH Centros: Pulsado tecla" + textSerch);
 
             event.stopPropagation();
 
@@ -2113,14 +1940,9 @@ $(document).on('pageinit', '#LoginPage', function () {
             displayNuevoPedido();
 
 
-        }else if (localStorage["pantalla"] == "pedidoNuevoPlantillas") {
-
-            console.log("ESTAMOS DENTRO DE LISTA DE CENTROS");
+        } else if (localStorage["pantalla"] == "pedidoNuevoPlantillas") {
 
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO LISTA DE CENTROS " + textSerch);
-
             var gridDet = $("#pGridPedidosPlantillas").data("kendoGrid");
 
             var filterDet = {
@@ -2129,15 +1951,15 @@ $(document).on('pageinit', '#LoginPage', function () {
                     field: 'cod_centr',
                     operator: "contains",
                     value: textSerch
-                },{
+                }, {
                     field: 'zona',
                     operator: "contains",
                     value: textSerch
-                },{
+                }, {
                     field: 'cod_proveedo',
                     operator: "contains",
                     value: textSerch
-                },{
+                }, {
                     field: 'nombre',
                     operator: "contains",
                     value: textSerch
@@ -2156,21 +1978,16 @@ $(document).on('pageinit', '#LoginPage', function () {
             var queryDet = new kendo.data.Query(allDataDet);
             var dataDet = queryDet.filter(filtersDetalle).data;
 
-            
+
             var mr = parseInt(localStorage.getItem("max_row_per_pag") - 2);
             localStorage["pedidos_pag_act"] = 1;
             localStorage["pedidos_pag_max_row"] = mr;
             localStorage["pedidos_pag_last"] = Math.ceil(dataDet.length / parseInt(mr));
             displayPlantillasNuevoPedido();
-            
-        }else if (localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
 
-            console.log("ESTAMOS DENTRO DE LISTA DE CENTROS");
+        } else if (localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
 
             var textSerch = $('#searchText').val();
-
-            console.log("VALOR DEL FILTRO LISTA DE CENTROS " + textSerch);
-
             var gridDet = $("#pGridNuevoPedido").data("kendoGrid");
 
             var filterDet = {
@@ -2204,8 +2021,6 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             gridDet.dataSource.filter(filterDet);
 
-            console.log("SEARCH Centros: Pulsado tecla" + textSerch);
-
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
@@ -2220,9 +2035,9 @@ $(document).on('pageinit', '#LoginPage', function () {
             displayResumenNuevoPedido();
         }
 
-});
+    });
 
-    
+
     //evento de cancelar filtro del filtro header
     $(document).on('click', '.ui-input-clear', function () {
 
@@ -2336,7 +2151,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             displayInsertarArticulos();
 
-        }else if (localStorage["pantalla"] == "nuevo_proveedores") {
+        } else if (localStorage["pantalla"] == "nuevo_proveedores") {
 
             var grid = $("#pGridProveedores").data("kendoGrid");
             grid.dataSource.filter([]);
@@ -2350,41 +2165,41 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             displayProviders();
 
-        }else if (localStorage["pantalla"] == "pedidoNuevoAnteriores") {
+        } else if (localStorage["pantalla"] == "pedidoNuevoAnteriores") {
 
             var grid = $("#pGridPedidosAnteriores").data("kendoGrid");
             grid.dataSource.filter([]);
             var dataSource = $("#pGridPedidosAnteriores").data("kendoGrid").dataSource;
             var allData = dataSource.data();
-            
-            var mr = parseInt(localStorage.getItem("max_row_per_pag") -2); // Una fila menos debido a los labels superiores
+
+            var mr = parseInt(localStorage.getItem("max_row_per_pag") - 2); // Una fila menos debido a los labels superiores
             localStorage["pedidos_pag_act"] = 1;
             localStorage["pedidos_pag_max_row"] = parseInt(mr);
             localStorage["pedidos_pag_last"] = Math.ceil(parseInt(allData.length) / parseInt(mr));
 
             displayPedidosAnterioresNuevoPedido();
-        }else if (localStorage["pantalla"] == "pedidoNuevoPlantillas") {
+        } else if (localStorage["pantalla"] == "pedidoNuevoPlantillas") {
 
             var grid = $("#pGridPedidosPlantillas").data("kendoGrid");
             grid.dataSource.filter([]);
             var dataSource = $("#pGridPedidosPlantillas").data("kendoGrid").dataSource;
             var allData = dataSource.data();
-            
+
             var mr = parseInt(localStorage.getItem("max_row_per_pag") - 2);
             localStorage["pedidos_pag_act"] = 1;
             localStorage["pedidos_pag_max_row"] = mr;
             localStorage["pedidos_pag_last"] = Math.ceil(allData.length / parseInt(mr));
             displayPlantillasNuevoPedido();
-            
-        }else if (localStorage["pantalla"] == "pedidosDetalleAnterior") {
+
+        } else if (localStorage["pantalla"] == "pedidosDetalleAnterior") {
 
             var grid = $("#pGridPedidosDet").data("kendoGrid");
             grid.dataSource.filter([]);
             var dataSource = $("#pGridPedidosDet").data("kendoGrid").dataSource;
             var allData = dataSource.data();
-            
+
             localStorage["pedidos_detalle_pag_act"] = 1;
-            localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"]);            
+            localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"]);
 
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(parseInt(allData.length) / parseInt(localStorage["pedidos_detalle_pag_max_row_max"]));
 
@@ -2401,11 +2216,34 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"]);
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(allData.length / parseInt(localStorage["pedidos_detalle_pag_max_row"]));
 
-            //displayResumenNuevoPedido();
+            displayResumenNuevoPedido();
+        }else if (localStorage["pantalla"] == "pedidosBorradores") {
+            
+            var grid = $("#pGridBorradores").data("kendoGrid");
+            grid.dataSource.filter([]);
+            var dataSource = $("#pGridBorradores").data("kendoGrid").dataSource;
+            var allData = dataSource.data(); 
+            
+            localStorage["pedidos_pag_act"]=1;
+            localStorage["pedidos_pag_max_row"]=parseInt(localStorage.getItem("max_row_per_pag"));
+            localStorage["pedidos_pag_last"]=	Math.ceil(allData.length / parseInt(localStorage["pedidos_pag_max_row"]) );
+            displayBorradores(); 
+
+            
+        }else if (localStorage["pantalla"] == "borradoresDetalle") {
+            
+            var grid = $("#pGridDetalleBorrador").data("kendoGrid");
+            grid.dataSource.filter([]);
+            var dataSource = $("#pGridDetalleBorrador").data("kendoGrid").dataSource;
+            var allData = dataSource.data();
+            
+            localStorage["pedidos_detalle_pag_act"] = 1;
+            localStorage["pedidos_detalle_pag_max_row"] = localStorage["max_row_per_pag"] - 2;
+            localStorage["pedidos_detalle_pag_last"] = Math.ceil(allData.length / localStorage["pedidos_detalle_pag_max_row"]);
+            displayDetalleBorradores();
+
         }
 
-        
-        
     });
 
     $('#btnLoad').unbind('click').bind('click', function () {
@@ -2632,7 +2470,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             insertLog(2, 2, "Carga de datos por token caducado", "El usuario ha vuelto a recargar la base de datos");
             recargarInformacion();
         } else if (accion == "pMostrarPedidos") {
-          pBorrarPedidosSinFinalizar();
+            pBorrarPedidosSinFinalizar();
             $("#pedidosDialogAC").popup("close");
             $("#navpanel").panel("close");
             pMostrarPedidos();
@@ -2755,7 +2593,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 			}); */
             //setTimeout('$("#InCodigoEan").focus();',1000);
         } else if (accion == "actualizarArticulo") {
-            
+
             /*
 			$("#pedidosDialogAC").on("popupafterclose", function(event, ui) {
 				console.log("PETE 1");
@@ -2773,7 +2611,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 			});
 			*/
         } else if (accion == "actualizar") {
-           getToken();
+            getToken();
         }
 
     });
@@ -3246,7 +3084,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
     $('#mBtnDialogACOk').unbind('click').bind('click', function () {
         $('#mDialogAC').popup("close");
-        localStorage['tcarga']=0;
+        localStorage['tcarga'] = 0;
         recargaTotal();
 
     });
@@ -3300,7 +3138,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
 $(document).on('pageinit', '#menuPrincipal', function () {
 
-    localStorage["cargaDeDatos"]="completa";
+    localStorage["cargaDeDatos"] = "completa";
 
 
     //Rutina para comprobar el estado de la conexi?

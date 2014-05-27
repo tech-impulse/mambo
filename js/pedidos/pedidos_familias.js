@@ -975,7 +975,7 @@ function pNuevoPedidoInsertarArticuloTemporal(idItem, cantidad, nomCadena) {
 
                     if ((localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") && $('#pedidosDialogInsertarOrden').text() == "Modificar") {
                         console.log("Modificamos Articulo Pedido Normal ");
-                        pModificarDetallePedidoTemporal(idItem, idCadena, cantidad);
+                        pModificarDetallePedidoTemporal(idItem, idCadena, cantidad, name, chainName);
                     } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner" && $('#pedidosDialogACOrden').text() != "existenBorradores") {
                         console.log("Insertamos Global");
                         pGlobalEscanerAnadirArticulo($("#InEANPrincipalInsertarPedido").val(), idCadena, cantidad, localStorage["pNuevoPedidoIdCentro"], name, chainName);
@@ -984,8 +984,6 @@ function pNuevoPedidoInsertarArticuloTemporal(idItem, cantidad, nomCadena) {
                         pGlobalEscanerAnadirArticulo($("#InEANPrincipalInsertarPedido").val(), idCadena, cantidad, localStorage["pNuevoPedidoIdCentro"], name, chainName);
                     } else {
                         console.log("Insertamos Detalle de Pedido temporal por defecto por CADENA ENCONTRADA"+cantidad);
-                       
-                        //pModificarDetallePedidoTemporal(idItem, idCadena, cantidad);
                         pInsertarDetallePedidoTemporal(idItem, idCadena, cantidad, name, chainName);
                         
                     }
