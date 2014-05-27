@@ -86,98 +86,98 @@ function getControlEventosPedidos() {
             getDescripcionAviso("cancelarPedido");
             $("#pedidosDialogAC").popup("open");
         } else if (localStorage["pantalla"] == "pedidosDetalleNuevo") { // GUARDAR COMO PLANTILLA
-            
-                	if(localStorage['pantalla_anterior']=="pedidos_plantillas_detalle"){
-        		var provider = localStorage["pNuevoPedidoIdProveedor"];
-						var center = localStorage["pNuevoPedidoIdCentro"];
-						var refer = localStorage['pNuevoPedidoPlantillaRef'];
-						
-						db.transaction(function (transaction) {
-			
-			        var sql = "SELECT o.name as nombre FROM ordersTemplates as o WHERE o.reference='"+refer+"'";
-			
-			        console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
-			
-			        transaction.executeSql(sql, undefined,
-			            function (transaction, result) {
-			            	
-			            	var rowDb = result.rows.item (0);
-			            	
-			            	if (rowDb.nombre==undefined) { 	$("#pedidosPopUpInputNombrePlantilla").val(""); }
-			            	else { $("#pedidosPopUpInputNombrePlantilla").val(rowDb.nombre); }
-			            	
-				            $("#pedidosPopUpNombrePlantilla").popup("open");
-				            
-				            //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId']);
-				            //pRellenarGridNuevoPedido();	
-				            
-				          });
-				    });
-                        
-				  } else {
-                            // LISTA DE ZONAS
-                    db.transaction(function (transaction) {
-                        var sql = "SELECT distinct z.name as nom, z.idDeliveryZone as id FROM deliveryZones as z WHERE z.idPurchaseCenter=" + localStorage["pNuevoPedidoIdCentro"] + " ORDER BY z.name DESC ";
-                        console.log("LISTA DE ZONAS 1 " + sql);
-                        transaction.executeSql(sql, undefined,
-                            function (transaction, result) {
-                                console.log("LISTA DE ZONAS 2");
-                                var i = 0;
-                                var listaZonas = [];
 
-                                for (i = 0; i < result.rows.length; i++) {
-                                    var zone = result.rows.item(i);
+            if (localStorage['pantalla_anterior'] == "pedidos_plantillas_detalle") {
+                var provider = localStorage["pNuevoPedidoIdProveedor"];
+                var center = localStorage["pNuevoPedidoIdCentro"];
+                var refer = localStorage['pNuevoPedidoPlantillaRef'];
 
-                                    listaZonas.push({
-                                        id_zona: zone.id,
-                                        nombre_zona: zone.nom,
-                                    });
+                db.transaction(function (transaction) {
 
-                                }
-                                if (i == 1) {
-                                    $('#ptxtZonaCabeceraPlantilla').kendoDropDownList({
-                                        dataSource: {
-                                            data: listaZonas
-                                        },
-                                        dataTextField: 'nombre_zona',
-                                        dataValueField: 'id_zona',
-                                    }).data("kendoDropDownList");
-                                } else {
-                                    $('#ptxtZonaCabeceraPlantilla').kendoDropDownList({
-                                        dataSource: {
-                                            data: listaZonas
-                                        },
-                                        dataTextField: 'nombre_zona',
-                                        dataValueField: 'id_zona',
-                                        optionLabel: "Seleccionar",
-                                    }).data("kendoDropDownList");
-                                }
+                    var sql = "SELECT o.name as nombre FROM ordersTemplates as o WHERE o.reference='" + refer + "'";
 
-                            }, error6);
-                    });
-				  	$("#pedidosPopUpInputNombrePlantilla").val("");
-				    $("#pedidosPopUpNombrePlantilla").popup("open");				  	
-				  }
+                    console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
 
-        } 
-        else if (localStorage["pantalla"] == "pedidosDetalle") {
+                    transaction.executeSql(sql, undefined,
+                        function (transaction, result) {
+
+                            var rowDb = result.rows.item(0);
+
+                            if (rowDb.nombre == undefined) {
+                                $("#pedidosPopUpInputNombrePlantilla").val("");
+                            } else {
+                                $("#pedidosPopUpInputNombrePlantilla").val(rowDb.nombre);
+                            }
+
+                            $("#pedidosPopUpNombrePlantilla").popup("open");
+
+                            //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId']);
+                            //pRellenarGridNuevoPedido();	
+
+                        });
+                });
+
+            } else {
+                // LISTA DE ZONAS
+                db.transaction(function (transaction) {
+                    var sql = "SELECT distinct z.name as nom, z.idDeliveryZone as id FROM deliveryZones as z WHERE z.idPurchaseCenter=" + localStorage["pNuevoPedidoIdCentro"] + " ORDER BY z.name DESC ";
+                    console.log("LISTA DE ZONAS 1 " + sql);
+                    transaction.executeSql(sql, undefined,
+                        function (transaction, result) {
+                            console.log("LISTA DE ZONAS 2");
+                            var i = 0;
+                            var listaZonas = [];
+
+                            for (i = 0; i < result.rows.length; i++) {
+                                var zone = result.rows.item(i);
+
+                                listaZonas.push({
+                                    id_zona: zone.id,
+                                    nombre_zona: zone.nom,
+                                });
+
+                            }
+                            if (i == 1) {
+                                $('#ptxtZonaCabeceraPlantilla').kendoDropDownList({
+                                    dataSource: {
+                                        data: listaZonas
+                                    },
+                                    dataTextField: 'nombre_zona',
+                                    dataValueField: 'id_zona',
+                                }).data("kendoDropDownList");
+                            } else {
+                                $('#ptxtZonaCabeceraPlantilla').kendoDropDownList({
+                                    dataSource: {
+                                        data: listaZonas
+                                    },
+                                    dataTextField: 'nombre_zona',
+                                    dataValueField: 'id_zona',
+                                    optionLabel: "Seleccionar",
+                                }).data("kendoDropDownList");
+                            }
+
+                        }, error6);
+                });
+                $("#pedidosPopUpInputNombrePlantilla").val("");
+                $("#pedidosPopUpNombrePlantilla").popup("open");
+            }
+
+        } else if (localStorage["pantalla"] == "pedidosDetalle") {
             // ELIMINAR
             getDescripcionAviso("eliminarPedido");
             $("#pedidosDialogAC").popup("open");
-        }
-        else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
+        } else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
             // ELIMINAR
             getDescripcionAviso("eliminarPlantilla");
             $("#pedidosDialogAC").popup("open");
         } else if (localStorage["pantalla"] == "insertarArticulos") {
             // FINALIZAR INSERCION
-            if ($("#seccion_title").val()=="plantilla"){
-                 pRellenarGridNuevoPedido("","M");
+            if ($("#seccion_title").val() == "plantilla") {
+                pRellenarGridNuevoPedido("", "M");
+            } else {
+                pRellenarGridNuevoPedido();
             }
-            else{
-            pRellenarGridNuevoPedido();
-            }
-            insertLog(3,5,"Nuevo articulo en base a seleccion por familias",localStorage['pNuevoPedidoIntenalId']+","+localStorage['pNuevoPedidoIdProveedor']+","+localStorage['pNuevoPedidoIdCentro']);
+            insertLog(3, 5, "Nuevo articulo en base a seleccion por familias", localStorage['pNuevoPedidoIntenalId'] + "," + localStorage['pNuevoPedidoIdProveedor'] + "," + localStorage['pNuevoPedidoIdCentro']);
         } else if (localStorage["pantalla"] == "pFiltroFamilias") {
             // QUITAR FILTRO
             pMostrarArticulos("filtrados");
@@ -187,10 +187,10 @@ function getControlEventosPedidos() {
             $("#pedidosDialogAC").popup("open");
         } else if (localStorage["pantalla"] == "borradoresDetalle") {
             // BORRAR BORRADOR
-        	getDescripcionAviso("eliminarBorrador");
-        	insertLog(3,6,"Eliminar borrador ",localStorage['pNuevoPedidoIntenalId']+","+localStorage['pNuevoPedidoIdProveedor']+","+localStorage['pNuevoPedidoIdCentro']);
+            getDescripcionAviso("eliminarBorrador");
+            insertLog(3, 6, "Eliminar borrador ", localStorage['pNuevoPedidoIntenalId'] + "," + localStorage['pNuevoPedidoIdProveedor'] + "," + localStorage['pNuevoPedidoIdCentro']);
             $("#pedidosDialogAC").popup("open");
-        		
+
         }
     });
 
@@ -200,42 +200,42 @@ function getControlEventosPedidos() {
         if (localStorage["pantalla"] == "pedidoNuevoAnteriores" || localStorage["pantalla"] == "pedidoNuevoPlantillas") {
             // NUEVO PEDIDO POR ARTICULOS
             pListaNuevoPedidoVacio(); // genera la grid de kendo cargando la orden de la tabla temporal (vacia)
-            insertLog(3,5,"Origen de alta de pedido","En blanco");
+            insertLog(3, 5, "Origen de alta de pedido", "En blanco");
 
-        } else if (localStorage["pantalla"] == "pedidosDetalle" || localStorage["pantalla"] == "pedidosDetalleAnterior" ) {
+        } else if (localStorage["pantalla"] == "pedidosDetalle" || localStorage["pantalla"] == "pedidosDetalleAnterior") {
             // SELECCIONAR COMO PEDIDO BASE
             pGenerarPedidoEnBaseAPedido();
-            insertLog(3,5,"Origen de alta de pedido","En base a pedido anterior");
+            insertLog(3, 5, "Origen de alta de pedido", "En base a pedido anterior");
 
-            
-        } else if( localStorage["pantalla"] == "pedidos_plantillas_detalle") {    
-        	
-           console.log(" PLANTILLA A PEDIDO BASE => "+$("#pTxtNuevoPedidoPlantillaRef").val());
-           
-           localStorage["pantalla_anterior"]="pedidos_plantillas_detalle";
-           insertLog(3,5,"Origen de alta de pedido","En base a plantilla");
-           localStorage["pantalla_anterior"]="";
-           pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(),"N") ;
-           
-            
+
+        } else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
+
+            console.log(" PLANTILLA A PEDIDO BASE => " + $("#pTxtNuevoPedidoPlantillaRef").val());
+
+            localStorage["pantalla_anterior"] = "pedidos_plantillas_detalle";
+            insertLog(3, 5, "Origen de alta de pedido", "En base a plantilla");
+            localStorage["pantalla_anterior"] = "";
+            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(), "N");
+
+
         } else if (localStorage["pantalla"] == "borradoresDetalle") {
-        	
+
             // MODIFICAR    
-            localStorage['numFilaSeleccionada']="borradores";
+            localStorage['numFilaSeleccionada'] = "borradores";
             console.log("------------fbtn2-------------------");
             console.log(localStorage['pNuevoPedidoIntenalId']);
-            insertLog(3,6,"Modificar borrador",localStorage['pNuevoPedidoIntenalId']+","+localStorage['pNuevoPedidoIdProveedor']+","+localStorage['pNuevoPedidoIdCentro']);
-            pGuardarBorradorComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId'], 2);               
-            pRellenarGridNuevoPedido();   
-            
+            insertLog(3, 6, "Modificar borrador", localStorage['pNuevoPedidoIntenalId'] + "," + localStorage['pNuevoPedidoIdProveedor'] + "," + localStorage['pNuevoPedidoIdCentro']);
+            pGuardarBorradorComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId'], 2);
+            pRellenarGridNuevoPedido();
+
         } else if (localStorage["pantalla"] == "pedidosAyuda") {
-        	
+
             // GUARDAR BORRADOR 
             getDescripcionAviso("accionNoDisponible");
             $("#pedidosDialogA").popup("open");
             //pGuardarPlantillaComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId']);               
             //pRellenarGridNuevoPedido(); 
-              
+
         } else if (localStorage["pantalla"] == "pFiltroFamilias") {
             // APLICAR FILTRO
             if (localStorage["pedidos_filtro_id_familia_nivel1"] == "nulo") {
@@ -246,7 +246,7 @@ function getControlEventosPedidos() {
         } else if (localStorage["pantalla"] == "pedidos_cabecera") {
             // RESUMEN
             //pRellenarGridNuevoPedido();
-            localStorage["pantalla_anterior"]="pedidos_cabecera";
+            localStorage["pantalla_anterior"] = "pedidos_cabecera";
             pResumenNuevoPedido();
 
             //getDescripcionAviso("accionNoDisponible");
@@ -259,22 +259,19 @@ function getControlEventosPedidos() {
             $("#pedidosDialogA").popup("open");
             //pGuardarPlantillaComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId']);               
             //pRellenarGridNuevoPedido();   
-        }
-        else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').text()!="Guardar Plantilla") {
-            
-            // GUARDAR BORRADOR 
-			checkPedidoACero();
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').text() != "Guardar Plantilla") {
 
-        }
-        else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
             // GUARDAR BORRADOR 
-           pGuardarPedidoTemporalComoBorrador(localStorage['pNuevoPedidoIntenalId'], "1");   
-            
-            
+            checkPedidoACero();
+
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
+            // GUARDAR BORRADOR 
+            pGuardarPedidoTemporalComoBorrador(localStorage['pNuevoPedidoIntenalId'], "1");
+
+
             //pGuardarPlantillaComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId']);               
             //pRellenarGridNuevoPedido();   
-        }
-        else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').text()=="Guardar Plantilla") {
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').text() == "Guardar Plantilla") {
             pGuardarPedidoTemporalComoPlantillaExistente(localStorage["pNuevoPedidoIntenalId"]);
         }
 
@@ -284,61 +281,61 @@ function getControlEventosPedidos() {
 
         if (localStorage["pantalla"] == "pedidosDetalleNuevo") {
             // INSERTAR ARTICULOS / MODIFICAR
-						crearFiltro(); // Reinicializa los filtros
+            crearFiltro(); // Reinicializa los filtros
             $('#pDivCheckPrecioDetallePedido').html('<img id="checkPrecioDetallePedido" src="images/uncheck.png" style="width:30px; height:30px">');
             pMostrarArticulos();
         } else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
             // MODIFICAR
-            console.log(" PLANTILLA A MODIFICAR  => "+$("#pTxtNuevoPedidoPlantillaRef").val());
-            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(),"M");
-            
+            console.log(" PLANTILLA A MODIFICAR  => " + $("#pTxtNuevoPedidoPlantillaRef").val());
+            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(), "M");
+
         } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
             // GUARDAR BORRADOR 
-           insertLog(3,7,"Generacion de borrador","IdInterno: "+localStorage["pNuevoPedidoIntenalId"]+", Proveedor: "+localStorage["pNuevoPedidoIdCentro"]+", Centro: "+localStorage["pNuevoPedidoIdCentro"]);
-           pGuardarPedidoTemporalComoBorrador(localStorage['pNuevoPedidoIntenalId'], "1");       
-            
+            insertLog(3, 7, "Generacion de borrador", "IdInterno: " + localStorage["pNuevoPedidoIntenalId"] + ", Proveedor: " + localStorage["pNuevoPedidoIdCentro"] + ", Centro: " + localStorage["pNuevoPedidoIdCentro"]);
+            pGuardarPedidoTemporalComoBorrador(localStorage['pNuevoPedidoIntenalId'], "1");
+
             //pGuardarPlantillaComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId']);               
             //pRellenarGridNuevoPedido();   
         } else if (localStorage["pantalla"] == "pedidos_cabecera") {
             // GUARDAR BORRADOR 
 
-			checkPedidoACero(); 
-			
+            checkPedidoACero();
+
         } else if (localStorage["pantalla"] == "borradoresDetalle") {
             // FINALIZAR (BORRADOR)
-            
-            pGuardarBorradorComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId'],0);
-			pBorrarBorrador(localStorage['pNuevoPedidoIntenalId']);
-            
-            localStorage['proveedor_seleccionado']=$("#pTxtNuevoPedidoBorradorProveedor").val();
-            localStorage['centro_seleccionado']=$("#pTxtNuevoPedidoBorradorCentro").val();
+
+            pGuardarBorradorComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId'], 0);
+            pBorrarBorrador(localStorage['pNuevoPedidoIntenalId']);
+
+            localStorage['proveedor_seleccionado'] = $("#pTxtNuevoPedidoBorradorProveedor").val();
+            localStorage['centro_seleccionado'] = $("#pTxtNuevoPedidoBorradorCentro").val();
 
             //checkPedidoACero();
-            
-            
+
+
         } else if (localStorage["pantalla"] == "pedidosDetalle") {
             // MODIFICAR PEDIDO
             db.transaction(function (transaction) {
 
-            var sql = "SELECT idInternalOrder, idVendor, idPurchaseCenter FROM ordersPending WHERE reference='"+$("#txtCodPedido").val()+"'";
+                var sql = "SELECT idInternalOrder, idVendor, idPurchaseCenter FROM ordersPending WHERE reference='" + $("#txtCodPedido").val() + "'";
 
-            transaction.executeSql(sql, undefined,
-                function (transaction, result) {
+                transaction.executeSql(sql, undefined,
+                    function (transaction, result) {
 
-                    var rowDb = result.rows.item (0);
-                    
-                     localStorage['pNuevoPedidoIntenalId'] = rowDb.idInternalOrder;
-                     localStorage['pNuevoPedidoIdProveedor'] = rowDb.idVendor;
-                     localStorage['pNuevoPedidoIdCentro'] = rowDb.idPurchaseCenter;
+                        var rowDb = result.rows.item(0);
 
-                  });
+                        localStorage['pNuevoPedidoIntenalId'] = rowDb.idInternalOrder;
+                        localStorage['pNuevoPedidoIdProveedor'] = rowDb.idVendor;
+                        localStorage['pNuevoPedidoIdCentro'] = rowDb.idPurchaseCenter;
+
+                    });
             });
-          
-           
+
+
             pRellenarGridNuevoPedido();
             //checkPedidoACero();
-            
-            
+
+
         }
 
 
@@ -346,11 +343,11 @@ function getControlEventosPedidos() {
 
 
     $("#fbtn4").unbind('click').bind('click', function () {
-    	
-    		$('#pDivCheckPrecioDetallePedido').html('<img id="checkPrecioDetallePedido" src="images/uncheck.png" style="width:30px; height:30px">');
-				$('#pLbpedidosDetalleNuevoPrecio').html('<label id="pLbpedidosDetalleNuevoPrecio" style="font-weight: bold; margin-bottom: 0px;text-align: center;">Mostrar precios</label>');
-			
-				console.log("Datos: "+document.getElementById('fbtn4').text);
+
+        $('#pDivCheckPrecioDetallePedido').html('<img id="checkPrecioDetallePedido" src="images/uncheck.png" style="width:30px; height:30px">');
+        $('#pLbpedidosDetalleNuevoPrecio').html('<label id="pLbpedidosDetalleNuevoPrecio" style="font-weight: bold; margin-bottom: 0px;text-align: center;">Mostrar precios</label>');
+
+        console.log("Datos: " + document.getElementById('fbtn4').text);
 
         if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
             // MODIFICAR
@@ -359,98 +356,100 @@ function getControlEventosPedidos() {
         } else if (localStorage["pantalla"] == "insertarArticulos") { //pedidosResumenNuevoPedido
             // FINALIZAR INSERCIÓN
             pRellenarGridNuevoPedido();
-        }else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && document.getElementById('fbtn4').text=="Modificar" ){
-        	           
-           pGuardarBorradorComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId'], 2); 
-           
-           pRellenarGridNuevoPedido(); 
-        
-        
-        } else if (localStorage["pantalla"] == "pedidosResumenNuevoPedido" && document.getElementById('fbtn4').text=="Modificar" ){
-        	           
-           
-           pRellenarGridNuevoPedido(); 
-        
-        
-        }else if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner" ) {
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && document.getElementById('fbtn4').text == "Modificar") {
+
+            pGuardarBorradorComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId'], 2);
+
+            pRellenarGridNuevoPedido();
+
+
+        } else if (localStorage["pantalla"] == "pedidosResumenNuevoPedido" && document.getElementById('fbtn4').text == "Modificar") {
+
+
+            pRellenarGridNuevoPedido();
+
+
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
             // ESCANER
             getDescripcionAviso("pedidoEscaner");
-						$("#InCodigoEan").val("");
+            $("#InCodigoEan").val("");
             $("#pDialogInsertEan").popup("open");
-            insertLog(3,5,"Nuevo articulo en base a escaner","IdInterno: "+localStorage['pNuevoPedidoIntenalId']+", Proveedor: "+localStorage['pNuevoPedidoIdProveedor']+", Centro: "+localStorage['pNuevoPedidoIdCentro']);
+            insertLog(3, 5, "Nuevo articulo en base a escaner", "IdInterno: " + localStorage['pNuevoPedidoIntenalId'] + ", Proveedor: " + localStorage['pNuevoPedidoIdProveedor'] + ", Centro: " + localStorage['pNuevoPedidoIdCentro']);
             //setTimeout('$("#InCodigoEan").focus();',500);
             localStorage.setItem('ModoEscaner', "1");
             console.log("Ponemos Escaner a 1");
         } else if (localStorage["pantalla"] == "pedidos_cabecera") {
-        	
-        	if(localStorage['pantalla_anterior']=="pedidos_plantillas_detalle"){
-        		var provider = localStorage["pNuevoPedidoIdProveedor"];
-						var center = localStorage["pNuevoPedidoIdCentro"];
-						var refer = localStorage['pNuevoPedidoPlantillaRef'];
-						
-						db.transaction(function (transaction) {
-			
-			        var sql = "SELECT o.name as nombre FROM ordersTemplates as o WHERE o.reference='"+refer+"'";
-			
-			        console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
-			
-			        transaction.executeSql(sql, undefined,
-			            function (transaction, result) {
-			            	
-			            	var rowDb = result.rows.item (0);
-			            	
-			            	if (rowDb.nombre==undefined) { 	$("#pedidosPopUpInputNombrePlantilla").val(""); }
-			            	else { $("#pedidosPopUpInputNombrePlantilla").val(rowDb.nombre); }
-			            	
-				            $("#pedidosPopUpNombrePlantilla").popup("open");
-				            
-				            //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId']);
-				            //pRellenarGridNuevoPedido();	
-				            
-				          });
-				    });
-				  } else {
-				  	$("#pedidosPopUpInputNombrePlantilla").val("");
-				    $("#pedidosPopUpNombrePlantilla").popup("open");				  	
-				  }
+
+            if (localStorage['pantalla_anterior'] == "pedidos_plantillas_detalle") {
+                var provider = localStorage["pNuevoPedidoIdProveedor"];
+                var center = localStorage["pNuevoPedidoIdCentro"];
+                var refer = localStorage['pNuevoPedidoPlantillaRef'];
+
+                db.transaction(function (transaction) {
+
+                    var sql = "SELECT o.name as nombre FROM ordersTemplates as o WHERE o.reference='" + refer + "'";
+
+                    console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
+
+                    transaction.executeSql(sql, undefined,
+                        function (transaction, result) {
+
+                            var rowDb = result.rows.item(0);
+
+                            if (rowDb.nombre == undefined) {
+                                $("#pedidosPopUpInputNombrePlantilla").val("");
+                            } else {
+                                $("#pedidosPopUpInputNombrePlantilla").val(rowDb.nombre);
+                            }
+
+                            $("#pedidosPopUpNombrePlantilla").popup("open");
+
+                            //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId']);
+                            //pRellenarGridNuevoPedido();	
+
+                        });
+                });
+            } else {
+                $("#pedidosPopUpInputNombrePlantilla").val("");
+                $("#pedidosPopUpNombrePlantilla").popup("open");
+            }
         }
 
     });
 
     $("#fbtn5").unbind('click').bind('click', function () {
-    	  
-    	  if (localStorage["pantalla"] == "pedidosDetalleNuevo" && localStorage["pantalla_anterior"]=="pedidos_plantillas_detalle" ) {
-        		//GUARDANDO UNA PLANTILLA EXISTENTE
-        
-   
-	        db.transaction(function (transaction) {
-				
-				        var sql = "SELECT o.observaciones as nombre FROM ordersPending as o WHERE o.idInternalOrder='"+localStorage['pNuevoPedidoIntenalId']+"'";
-				
-				        console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
-				
-				        transaction.executeSql(sql, undefined,
-				            function (transaction, result) {
-				            	
-				            	var rowDb = result.rows.item (0);
-	            				if (rowDb.nombre==undefined) { 	$("#pedidosPopUpInputNombrePlantilla").val(""); }
-	            				
-			            	else { 
-			            			 $("#pedidosPopUpInputNombrePlantilla").val(rowDb.nombre); 
-			            	}
-			            	
-					            $("#pedidosPopUpNombrePlantilla").popup("open");
-					            
-					            //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId']);
-					            //pRellenarGridNuevoPedido();	
-					            
-					          });
-					    });
 
-        } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').is(":hidden") || localStorage["pantalla"] == "pedidosResumenNuevoPedido"  )
-        {
+        if (localStorage["pantalla"] == "pedidosDetalleNuevo" && localStorage["pantalla_anterior"] == "pedidos_plantillas_detalle") {
+            //GUARDANDO UNA PLANTILLA EXISTENTE
+
+
+            db.transaction(function (transaction) {
+
+                var sql = "SELECT o.observaciones as nombre FROM ordersPending as o WHERE o.idInternalOrder='" + localStorage['pNuevoPedidoIntenalId'] + "'";
+
+                console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
+
+                transaction.executeSql(sql, undefined,
+                    function (transaction, result) {
+
+                        var rowDb = result.rows.item(0);
+                        if (rowDb.nombre == undefined) {
+                            $("#pedidosPopUpInputNombrePlantilla").val("");
+                        } else {
+                            $("#pedidosPopUpInputNombrePlantilla").val(rowDb.nombre);
+                        }
+
+                        $("#pedidosPopUpNombrePlantilla").popup("open");
+
+                        //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId']);
+                        //pRellenarGridNuevoPedido();	
+
+                    });
+            });
+
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').is(":hidden") || localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
             displayCabeceraPedido();
-          
+
         } else if (localStorage["pantalla"] == "pedidosDetalleNuevo") {
             // FINALIZAR (NUEVO PEDIDO)
             checkPedidoVacio();
@@ -467,21 +466,21 @@ function getControlEventosPedidos() {
                 $("#pedidosDialogA").popup("open");
             } else if ($("#ptxtFechaEntregaCabecera").val() != "Selecciona" && $("#ptxtZonaCabecera").val() != "") {
                 console.log("Puede enviarse!");
-                
+
                 pBotonFinalizarNuevoPedido();
 
             }
 
-        } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner"){
-			
-			getDescripcionAviso("borradoresGuardados");
-			$("#pedidosDialogAC").popup("open");
-			
-			 //getDescripcionAviso("seleccionarFecha");
-             //$("#pedidosDialogA").popup("open");
+        } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
+
+            getDescripcionAviso("borradoresGuardados");
+            $("#pedidosDialogAC").popup("open");
+
+            //getDescripcionAviso("seleccionarFecha");
+            //$("#pedidosDialogA").popup("open");
 
             //pGuardarPedidoGlobalTemporalComoBorrador();
-			
+
 
         } else
             console.log("Boton 5 no sabemos que pantalla es");
@@ -494,42 +493,45 @@ function getControlEventosPedidos() {
         console.log("BOTON 11111111 AYUDA PULSADO EN EVENTOS = " + localStorage["pantallaAnterior"] + "=" + localStorage["pantalla"]);
 
         localStorage["pantallaAnterior"] = localStorage["pantalla"];
-				
-       //localStorage["pantalla"] = "pedidosAyuda";
+
+        //localStorage["pantalla"] = "pedidosAyuda";
 
         getPedidosAyuda(localStorage["pantallaAnterior"]);
 
         console.log("BOTON 22222222 AYUDA PULSADO EN EVENTOS = " + localStorage["pantallaAnterior"] + "=" + localStorage["pantalla"]);
 
         //displayPedidosAyuda();
-        
+
         var el = document.getElementById('pAyuda-popup');
-        el.setAttribute('style','left:0px;width:100%;height:100%');
-        $( "#pAyuda" ).popup( "open" );  
-        insertLog(3,4,"Se ha accedido a la pantalla de ayuda",localStorage["pantalla"]);
+        el.setAttribute('style', 'left:0px;width:100%;height:100%');
+        $("#pAyuda").popup("open");
+        insertLog(3, 4, "Se ha accedido a la pantalla de ayuda", localStorage["pantalla"]);
 
 
     });
 
     $('#mpBtn1').unbind('click').bind('click', function () {
-    	
-    		pLimpiarParametrosTemporales();
-    		
+
+        pLimpiarParametrosTemporales();
+
         if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "insertarArticulos" || localStorage["pantalla"] == "pedidos_cabecera" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner" || localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
-            
-            
+
+
             var grid = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
-        		var datos = grid.data();
-        		console.log("DAtos de la grid de nuevo pedido es null?");
-        		console.log(datos);
-        		if(datos.length > 0){
-            getDescripcionAviso("cancelarPedido", "pMostrarPedidos");
-            localStorage["columnaFiltrada"]="";
-            $("#pedidosDialogAC").popup("open");
-            $("#navpanel").panel("close");
-            }else{$("#navpanel").panel("close"); pMostrarPedidos(); }
-            
-            
+            var datos = grid.data();
+            console.log("DAtos de la grid de nuevo pedido es null?");
+            console.log(datos);
+            if (datos.length > 0) {
+                getDescripcionAviso("cancelarPedido", "pMostrarPedidos");
+                localStorage["columnaFiltrada"] = "";
+                $("#pedidosDialogAC").popup("open");
+                $("#navpanel").panel("close");
+            } else {
+                $("#navpanel").panel("close");
+                pMostrarPedidos();
+            }
+
+
         } else {
             $("#navpanel").panel("close");
             pMostrarPedidos();
@@ -539,24 +541,28 @@ function getControlEventosPedidos() {
     });
 
     $('#mpBtn2').unbind('click').bind('click', function () {
-    	    
-    	  pLimpiarParametrosTemporales();  		
-    	    		
+
+        pLimpiarParametrosTemporales();
+
         if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "insertarArticulos" || localStorage["pantalla"] == "pedidos_cabecera" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner" || localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
-            
+
             var grid = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
-        		var datos = grid.data();
-        		console.log("DAtos de la grid de nuevo pedido es null?");
-        		console.log(datos);
-        		if(datos.length > 0){
-            getDescripcionAviso("cancelarPedido", "getCentros");
-            localStorage["columnaFiltrada"]="";
-            $("#pedidosDialogAC").popup("open");
-            $("#navpanel").panel("close");
-            }else{$("#navpanel").panel("close"); getCentros(); displayNuevoPedido(); }
-            
+            var datos = grid.data();
+            console.log("DAtos de la grid de nuevo pedido es null?");
+            console.log(datos);
+            if (datos.length > 0) {
+                getDescripcionAviso("cancelarPedido", "getCentros");
+                localStorage["columnaFiltrada"] = "";
+                $("#pedidosDialogAC").popup("open");
+                $("#navpanel").panel("close");
+            } else {
+                $("#navpanel").panel("close");
+                getCentros();
+                displayNuevoPedido();
+            }
+
         } else {
-        	
+
             $("#navpanel").panel("close");
             getCentros();
             displayNuevoPedido();
@@ -566,22 +572,25 @@ function getControlEventosPedidos() {
     });
 
     $('#mpBtn3').unbind('click').bind('click', function () {
-    	
-    		pLimpiarParametrosTemporales();
-    		
+
+        pLimpiarParametrosTemporales();
+
         if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "insertarArticulos" || localStorage["pantalla"] == "pedidos_cabecera" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner" || localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
-            
+
             var grid = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
-        		var datos = grid.data();
-        		console.log("DAtos de la grid de nuevo pedido es null?");
-        		console.log(datos);
-        		if(datos.length > 0){
-            getDescripcionAviso("cancelarPedido", "pMostrarTodosBorradores");
-            localStorage["columnaFiltrada"]="";
-            $("#pedidosDialogAC").popup("open");
-            $("#navpanel").panel("close");
-            }else{$("#navpanel").panel("close"); pMostrarTodosBorradores(); }
-            
+            var datos = grid.data();
+            console.log("DAtos de la grid de nuevo pedido es null?");
+            console.log(datos);
+            if (datos.length > 0) {
+                getDescripcionAviso("cancelarPedido", "pMostrarTodosBorradores");
+                localStorage["columnaFiltrada"] = "";
+                $("#pedidosDialogAC").popup("open");
+                $("#navpanel").panel("close");
+            } else {
+                $("#navpanel").panel("close");
+                pMostrarTodosBorradores();
+            }
+
         } else {
             $("#navpanel").panel("close");
             //getCentros();
@@ -592,22 +601,25 @@ function getControlEventosPedidos() {
 
 
     $('#mpBtn4').unbind('click').bind('click', function () {
-    	
-    		pLimpiarParametrosTemporales();
+
+        pLimpiarParametrosTemporales();
 
         if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "insertarArticulos" || localStorage["pantalla"] == "pedidos_cabecera" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner" || localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
-            
+
             var grid = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
-        		var datos = grid.data();
-        		console.log("DAtos de la grid de nuevo pedido es null?");
-        		console.log(datos);
-        		if(datos.length > 0){
-            getDescripcionAviso("cancelarPedido", "pMostrarTodasPlantillas");
-            localStorage["columnaFiltrada"]="";
-            $("#pedidosDialogAC").popup("open");
-            $("#navpanel").panel("close");
-            }else{$("#navpanel").panel("close"); pMostrarTodasPlantillas(); }
-            
+            var datos = grid.data();
+            console.log("DAtos de la grid de nuevo pedido es null?");
+            console.log(datos);
+            if (datos.length > 0) {
+                getDescripcionAviso("cancelarPedido", "pMostrarTodasPlantillas");
+                localStorage["columnaFiltrada"] = "";
+                $("#pedidosDialogAC").popup("open");
+                $("#navpanel").panel("close");
+            } else {
+                $("#navpanel").panel("close");
+                pMostrarTodasPlantillas();
+            }
+
         } else {
             $("#navpanel").panel("close");
             pMostrarTodasPlantillas();
@@ -625,12 +637,11 @@ function getControlEventosPedidos() {
         $('#pDivDetallePedido4').hide();
         $('#pDivDetallePedido5').hide();
         $('#pDivDetallePedido6').hide();
-        
-        if(localStorage["pantalla"]=="pedidosDetalleAnterior"){
-        pMostrarDetallePedidoAnterior(localStorage['pDetalleAnterior'], false);
-        }
-        else {
-        pMostrarDetallePedido(localStorage['pDetalleAnterior'], "", false);
+
+        if (localStorage["pantalla"] == "pedidosDetalleAnterior") {
+            pMostrarDetallePedidoAnterior(localStorage['pDetalleAnterior'], false);
+        } else {
+            pMostrarDetallePedido(localStorage['pDetalleAnterior'], "", false);
         }
     });
 
@@ -643,11 +654,10 @@ function getControlEventosPedidos() {
         $('#pDivDetallePedido4').show();
         $('#pDivDetallePedido5').show();
         $('#pDivDetallePedido6').show();
-        if(localStorage["pantalla"]=="pedidosDetalleAnterior"){
-        pMostrarDetallePedidoAnterior(localStorage['pDetalleAnterior'], true);
-        }
-        else {
-        pMostrarDetallePedido(localStorage['pDetalleAnterior'], "", true);
+        if (localStorage["pantalla"] == "pedidosDetalleAnterior") {
+            pMostrarDetallePedidoAnterior(localStorage['pDetalleAnterior'], true);
+        } else {
+            pMostrarDetallePedido(localStorage['pDetalleAnterior'], "", true);
         }
     });
 
@@ -698,118 +708,100 @@ function getControlEventosPedidos() {
     // POPUP DE INSERCION DE ARTICULOS
 
     $('#btnInsertarPedidoCancelar').unbind('click').bind('click', function () {
-    	
-    		document.getElementById("pLabelTextError").style.display="none";
-    		document.getElementById("chartTAM").style.display="block";
+
+        document.getElementById("pLabelTextError").style.display = "none";
+        document.getElementById("chartTAM").style.display = "block";
         $("#dialogInsertarPedido").popup("close");
         $("#InUnidadesInsertarPedido").val('1');
         $("#InCadenaInsertarPedido").val('');
         $("#InTotalesInsertarPedido").val('0');
-        $("#pBtnNumCargado").val('0');  
+        $("#pBtnNumCargado").val('0');
     });
 
     $('#btnInsertarPedidoOk').unbind('click').bind('click', function () {
-    		
-    		 $('#searchText').val("");
-    		 
-				 document.getElementById("pLabelTextError").style.display="none";
-				 document.getElementById("chartTAM").style.display="block";	
-         //pNuevoPedidoInsertarArticuloTemporal($("#LbTituloInsertarPedido").val(), $("#InUnidadesInsertarPedido").val(), $("#InCadenaInsertarPedido").data("kendoDropDownList").text());
-          
-	     		var valorUnidad = $('#InUnidadesInsertarPedido').val();
-	     		
-	     		if(valorUnidad==0 && localStorage['pantalla_anterior']!="pedidos_plantillas_detalle"){
-	     			
-	     				var grid = $("#pGridNuevoPedido").data("kendoGrid");
-				    	var dataGrid = grid.dataSource.data();
-	     				
-	     				if(localStorage['pantalla']=="insertarArticulos"){//Si estamos en la grid de escoger articulos se debera elimnar de la grid de nuevo pedido el item puesto a 0
-	     			
-			     			var grid2 = $("#pGridArticulos").data("kendoGrid");
-			       		var row2 = grid2.select();//no es el numero de la fila sino los datos seleccionados para kendo (es un array)
-			        	var datos2 = grid2.dataItem(row2);
-			        	var dataGrid2 = grid2.dataSource.data();
-	     				  var datos ="";		
-	     				  var dataJSON="";	
-	     				  dataJSON = dataGrid.toJSON();	
-	     				  
-                //Borramos el articulo el articulo de la grid de Nuevo pedido
-			    	  	for(var i=0;i<dataJSON.length;i++){
-			    	  		if(datos2.cod_articulo == dataJSON[i].cod_pedid){
-			    	  			grid.dataSource.remove(dataJSON[i]);
-			    	  			pEliminarArticuloPedidoTemporal(dataJSON[i].cod_pedid);
-			    	  		}
-			    	  	}	  
-			    	  	
-			    	  	row2.each(function () {
-								    var RowIndex = $(this).closest("tr").index();
-								    if(localStorage["pedidos_pag_act"]>1){
-										    console.log(RowIndex);
-										    var filasTot = parseInt(localStorage["pedidos_pag_max_row"]);
-										    var pagAct = parseInt(localStorage["pedidos_pag_act"])-1;
-										    var filaSelect = RowIndex + (filasTot * (pagAct) );//sumamos el numero de filas segun la paginacion porque solo selecciona la fila de la pagina actual
-					    	  			console.log(filaSelect);
-					    	  			dataGrid2[filaSelect].can_pedida="";
-					    	  			grid2.dataSource.data(dataGrid2);//cargamos de nuevo los datos modificados a la tabla
-			    	  		 	}else{//pagina actual es 1
-		    	  		 			dataGrid2[RowIndex].can_pedida="";
-				    	  			grid2.dataSource.data(dataGrid2);//cargamos de nuevo los datos modificados a la tabla
-			    	  		 	}
-								})
-								/*console.log(RowIndex);
-			    	  	dataGrid2[0].can_pedida="";
-			    	  	grid2.dataSource.data(dataGrid2);//cargamos de nuevo los datos modificados a la tabla*/
-			    	  	
-			    	  	
-			    	  	var grid = $("#pGridNuevoPedido").data("kendoGrid");
-				        grid.dataSource.page(localStorage['pedidos_detalle_pag_act']);
-			    	  				
-				    	}else{//si estamos en la grid de nuevo pedido eliminamos el item
-				    		
-				    		var row = grid.select();
-				    		console.log(row);
-				    		var datos = grid.dataItem(row);
-				    		
-				    		grid.dataSource.remove(datos);
-					      pEliminarArticuloPedidoTemporal(datos.cod_pedid);			
-					      
-					      
-				    	}
-				    	
-	    	  }else {
-				 			console.log("ESTO");
-	    	      pNuevoPedidoInsertarArticuloTemporal($("#LbTituloInsertarPedido").val(), $("#InUnidadesInsertarPedido").val(), $("#InCadenaInsertarPedido").data("kendoDropDownList").text());
-          
-          		
-		    	  	var grid = $("#pGridNuevoPedido").data("kendoGrid");
-			        grid.dataSource.page(localStorage['pedidos_detalle_pag_act']);
-          } 
-          $("#pBtnNumCargado").val('0');  
-          $("#dialogInsertarPedido").popup("close"); 
-         
-            /*$("#InUnidadesInsertarPedido").val('1');
-            $("#InCadenaInsertarPedido").val('');
-            $("#InTotalesInsertarPedido").val('0');*/
-            if (localStorage["ModoEscaner"]==1)
-            {
-                getDescripcionAviso("pedidoEscaner");
-								console.log("ESCANER SE ABRE SOLO AQUI " + localStorage["ModoEscaner"]);
-				
-                //setTimeout('$("#InCodigoEan").focus();',2000);
-                $("#pBtnNumCargado").val("0");
-            }
-            
 
-           /* if (localStorage["pantalla"] == "insertarArticulos")
-            {
-                var grid = $("#pGridArticulos").data("kendoGrid");
-                var rowId = localStorage.getItem('itemCheckGridNuevoPedido');
-                var raw = grid.dataSource.data();
-                var item = raw[rowId];
-                grid.dataSource.remove(item);
-                console.log(raw[rowId] + localStorage.getItem('itemCheckGridNuevoPedido'));
-            }*/
-            
+        $('#searchText').val("");
+
+        document.getElementById("pLabelTextError").style.display = "none";
+        document.getElementById("chartTAM").style.display = "block";
+        //pNuevoPedidoInsertarArticuloTemporal($("#LbTituloInsertarPedido").val(), $("#InUnidadesInsertarPedido").val(), $("#InCadenaInsertarPedido").data("kendoDropDownList").text());
+
+        var valorUnidad = $('#InUnidadesInsertarPedido').val();
+
+        if (valorUnidad == 0 && localStorage['pantalla_anterior'] != "pedidos_plantillas_detalle") {
+
+            var grid = $("#pGridNuevoPedido").data("kendoGrid");
+            var dataGrid = grid.dataSource.data();
+
+            if (localStorage['pantalla'] == "insertarArticulos") { //Si estamos en la grid de escoger articulos se debera elimnar de la grid de nuevo pedido el item puesto a 0
+
+                var grid2 = $("#pGridArticulos").data("kendoGrid");
+                var row2 = grid2.select(); //no es el numero de la fila sino los datos seleccionados para kendo (es un array)
+                var datos2 = grid2.dataItem(row2);
+                var dataGrid2 = grid2.dataSource.data();
+                var datos = "";
+                var dataJSON = "";
+                dataJSON = dataGrid.toJSON();
+
+                //Borramos el articulo el articulo de la grid de Nuevo pedido
+                for (var i = 0; i < dataJSON.length; i++) {
+                    if (datos2.cod_articulo == dataJSON[i].cod_pedid) {
+                        grid.dataSource.remove(dataJSON[i]);
+                        pEliminarArticuloPedidoTemporal(dataJSON[i].cod_pedid);
+                    }
+                }
+
+                row2.each(function () {
+                    var RowIndex = $(this).closest("tr").index();
+                    if (localStorage["pedidos_pag_act"] > 1) {
+                        console.log(RowIndex);
+                        var filasTot = parseInt(localStorage["pedidos_pag_max_row"]);
+                        var pagAct = parseInt(localStorage["pedidos_pag_act"]) - 1;
+                        var filaSelect = RowIndex + (filasTot * (pagAct)); //sumamos el numero de filas segun la paginacion porque solo selecciona la fila de la pagina actual
+                        console.log(filaSelect);
+                        dataGrid2[filaSelect].can_pedida = "";
+                        grid2.dataSource.data(dataGrid2); //cargamos de nuevo los datos modificados a la tabla
+                    } else { //pagina actual es 1
+                        dataGrid2[RowIndex].can_pedida = "";
+                        grid2.dataSource.data(dataGrid2); //cargamos de nuevo los datos modificados a la tabla
+                    }
+                });
+
+
+                var grid = $("#pGridNuevoPedido").data("kendoGrid");
+                grid.dataSource.page(localStorage['pedidos_detalle_pag_act']);
+
+            } else { //si estamos en la grid de nuevo pedido eliminamos el item
+
+                var row = grid.select();
+                console.log(row);
+                var datos = grid.dataItem(row);
+
+                grid.dataSource.remove(datos);
+                pEliminarArticuloPedidoTemporal(datos.cod_pedid);
+
+
+            }
+
+        } else {
+            console.log("ESTO");
+            pNuevoPedidoInsertarArticuloTemporal($("#LbTituloInsertarPedido").val(), $("#InUnidadesInsertarPedido").val(), $("#InCadenaInsertarPedido").data("kendoDropDownList").text());
+
+
+            var grid = $("#pGridNuevoPedido").data("kendoGrid");
+            grid.dataSource.page(localStorage['pedidos_detalle_pag_act']);
+
+        }
+        $("#pBtnNumCargado").val('0');
+        $("#dialogInsertarPedido").popup("close");
+
+        if (localStorage["ModoEscaner"] == 1) {
+            getDescripcionAviso("pedidoEscaner");
+            console.log("ESCANER SE ABRE SOLO AQUI " + localStorage["ModoEscaner"]);
+            $("#pBtnNumCargado").val("0");
+        }
+
+
     });
 
     $("#nivel1-menu").change(function () {
@@ -821,75 +813,76 @@ function getControlEventosPedidos() {
         $("#pNotificacionesPopup").popup("close");
     });
 
-		//POP UP GUARDAR plantilla 
-		$('#pedidosPopUpNombrePlantillaOk').unbind('click').bind('click', function(){
-			
-			if($("#pedidosPopUpInputNombrePlantilla").val()=="") {
-       	$( "#pedidosPopUpErrorNombrePlantilla").show();
-      } else {
-      	$( "#pedidosPopUpErrorNombrePlantilla").hide();
-      	$( "#pedidosPopUpNombrePlantilla" ).popup( "close");
-      	
-      	
-      	pCerrarPlantilla(localStorage['pNuevoPedidoIntenalId'], $( "#pedidosPopUpInputNombrePlantilla").val(),$("#ptxtZonaCabeceraPlantilla").val());
-      	
-      	setTimeout(pEnviarPlantilla(localStorage['pNuevoPedidoIntenalId']),300);
-      	
-      	//RE-ubicar
-      	//pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId'], $( "#pedidosPopUpInputNombrePlantilla").val() );
-      }   
-      
-    });
-    
-    $('#pedidosPopUpNombrePlantillaCancel').on('tap', function(){
-    	 $( "#pedidosPopUpErrorNombrePlantilla").hide();
-       $( "#pedidosPopUpNombrePlantilla" ).popup( "close");
+    //POP UP GUARDAR plantilla 
+    $('#pedidosPopUpNombrePlantillaOk').unbind('click').bind('click', function () {
+
+        if ($("#pedidosPopUpInputNombrePlantilla").val() == "") {
+            $("#pedidosPopUpErrorNombrePlantilla").show();
+        } else {
+            $("#pedidosPopUpErrorNombrePlantilla").hide();
+            $("#pedidosPopUpNombrePlantilla").popup("close");
+
+
+            pCerrarPlantilla(localStorage['pNuevoPedidoIntenalId'], $("#pedidosPopUpInputNombrePlantilla").val(), $("#ptxtZonaCabeceraPlantilla").val());
+
+            setTimeout(pEnviarPlantilla(localStorage['pNuevoPedidoIntenalId']), 300);
+
+            //RE-ubicar
+            //pGuardarPedidoTemporalComoPlantillaNueva(localStorage['pNuevoPedidoIntenalId'], $( "#pedidosPopUpInputNombrePlantilla").val() );
+        }
+
     });
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////
-		// Insertar Articulos Teclado numerico
-		$('#pBtnNum1,#pBtnNum2,#pBtnNum3,#pBtnNum4,#pBtnNum5,#pBtnNum6,#pBtnNum7,#pBtnNum8,#pBtnNum9,#pBtnNum0').unbind('click').bind('click', function(){
-			
-			var n=this.id.substr(7,1);
-			console.log("NUM= "+n);
-			
-       if ($("#pBtnNumCargado").val()==0 ||  $("#pBtnNumCargado").val()=="1" ) {
-       		$("#InUnidadesInsertarPedido").val(n);
-       		$("#pBtnNumCargado").val('2');	
-       } else {
-       		$("#InUnidadesInsertarPedido").val($("#InUnidadesInsertarPedido").val()+""+n);
-       } 
+    $('#pedidosPopUpNombrePlantillaCancel').on('tap', function () {
+        $("#pedidosPopUpErrorNombrePlantilla").hide();
+        $("#pedidosPopUpNombrePlantilla").popup("close");
+    });
 
-       var unidades_totales = parseFloat($("#InUnidadesInsertarPedido").val()) * parseFloat($("#InCadenaInsertarPedido").val());
-       $("#InTotalesInsertarPedido").val(unidades_totales);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Insertar Articulos Teclado numerico
+    $('#pBtnNum1,#pBtnNum2,#pBtnNum3,#pBtnNum4,#pBtnNum5,#pBtnNum6,#pBtnNum7,#pBtnNum8,#pBtnNum9,#pBtnNum0').unbind('click').bind('click', function () {
+
+        var n = this.id.substr(7, 1);
+        console.log("NUM= " + n);
+
+        if ($("#pBtnNumCargado").val() == 0 || $("#pBtnNumCargado").val() == "1") {
+            $("#InUnidadesInsertarPedido").val(n);
+            $("#pBtnNumCargado").val('2');
+        } else {
+            $("#InUnidadesInsertarPedido").val($("#InUnidadesInsertarPedido").val() + "" + n);
+        }
+
+        var unidades_totales = parseFloat($("#InUnidadesInsertarPedido").val()) * parseFloat($("#InCadenaInsertarPedido").val());
+        $("#InTotalesInsertarPedido").val(unidades_totales);
     });
-    
-    $('#pBtnNumDelete').unbind('click').bind('click', function(){
-			
-			$("#InUnidadesInsertarPedido").val($("#InUnidadesInsertarPedido").val().substr(0,$("#InUnidadesInsertarPedido").val().length -1));
-      
-       var unidades_totales = parseFloat($("#InUnidadesInsertarPedido").val()) * parseFloat($("#InCadenaInsertarPedido").val());
-       $("#InTotalesInsertarPedido").val(unidades_totales);
+
+    $('#pBtnNumDelete').unbind('click').bind('click', function () {
+
+        $("#InUnidadesInsertarPedido").val($("#InUnidadesInsertarPedido").val().substr(0, $("#InUnidadesInsertarPedido").val().length - 1));
+
+        var unidades_totales = parseFloat($("#InUnidadesInsertarPedido").val()) * parseFloat($("#InCadenaInsertarPedido").val());
+        $("#InTotalesInsertarPedido").val(unidades_totales);
     });
-    
-  
-    $('#pBtnNumD').unbind('click').bind('click', function(){
-    	
-			if ( $("#InUnidadesInsertarPedido").val().indexOf(".") == -1 )  {
-				
-				if ($("#InUnidadesInsertarPedido").val()=="")  { $("#InUnidadesInsertarPedido").val("0."); }
-				else $("#InUnidadesInsertarPedido").val($("#InUnidadesInsertarPedido").val()+".");
-					
-					$("#pBtnNumCargado").val('2');	
-			}
-			
+
+
+    $('#pBtnNumD').unbind('click').bind('click', function () {
+
+        if ($("#InUnidadesInsertarPedido").val().indexOf(".") == -1) {
+
+            if ($("#InUnidadesInsertarPedido").val() == "") {
+                $("#InUnidadesInsertarPedido").val("0.");
+            } else $("#InUnidadesInsertarPedido").val($("#InUnidadesInsertarPedido").val() + ".");
+
+            $("#pBtnNumCargado").val('2');
+        }
+
     });
-   
-        // Filtro popr familia pantalla Insertar Articulos
+
+    // Filtro popr familia pantalla Insertar Articulos
     $('#cancelNivel1').unbind('click').bind('click', function () {
-    //$('#ListaNivel1').prop('selectedIndex',0);
-	crearFiltro();
-    pMostrarArticulos();
+        //$('#ListaNivel1').prop('selectedIndex',0);
+        crearFiltro();
+        pMostrarArticulos();
     });
 
     $('#cancelNivel2').unbind('click').bind('click', function () {
@@ -904,18 +897,18 @@ function getControlEventosPedidos() {
     $('#cancelNivel3').unbind('click').bind('click', function () {
         //var selectBox1 = document.getElementById("nivel1");
         //selectBox1.options[selectBox1.selectedIndex].value
-       // $('#ListaNivel1').val();
+        // $('#ListaNivel1').val();
 
         $('#ListaNivel3').delay(200).fadeOut('slow');
         $('#cancelNivel3').delay(200).fadeOut('slow');
         localStorage["pedidos_filtro_id_familia_nivel3"] = "";
         pMostrarArticulos("filtrados");
     });
-    
-		$("#pedidosPopUpNombrePlantilla").on("popupafteropen", function(event, ui) {
-       // setTimeout('$("#InCodigoEan").focus();',1000);
-				$("#pedidosPopUpInputNombrePlantilla").focus();
-			
+
+    $("#pedidosPopUpNombrePlantilla").on("popupafteropen", function (event, ui) {
+        // setTimeout('$("#InCodigoEan").focus();',1000);
+        $("#pedidosPopUpInputNombrePlantilla").focus();
+
     });
 }
 
@@ -1073,14 +1066,14 @@ function checkPedidoVacio() { // Checkeamos que la tabla de nuevo Pedido tiene A
                 var cantidad = 0;
                 for (var i = 0; i < result.rows.length; i++) {
                     var rowDb = result.rows.item(i);
-                    cantidad = cantidad + parseInt(rowDb.n);                                
+                    cantidad = cantidad + parseInt(rowDb.n);
                 }
-                if (cantidad >= 1||localStorage['pantalla_anterior']=="pedidos_plantillas_detalle") {
+                if (cantidad >= 1 || localStorage['pantalla_anterior'] == "pedidos_plantillas_detalle") {
 
-									pMostrarCabeceraPedido();
+                    pMostrarCabeceraPedido();
 
-						
-                }else {
+
+                } else {
                     console.log("Numero de Articulos " + cantidad);
                     getDescripcionAviso("pedidoVacio");
                     $("#pedidosDialogA").popup("open");
@@ -1096,12 +1089,12 @@ function checkPedidoACero() { // Checkeamos que la tabla de nuevo Pedido tiene A
         var sql = "SELECT COUNT(*) as n FROM ordersPendingDetail WHERE idInternalOrder=" + localStorage['pNuevoPedidoIntenalId'] + "";
         transaction.executeSql(sql, undefined,
             function (transaction, result) {
-					console.log("Ressultado " + result.rows.item(0).n);
+                console.log("Ressultado " + result.rows.item(0).n);
                 if (result.rows.item(0).n > 0) {
-					console.log("Ressultado " + result.rows.item(0).n);
-					getDescripcionAviso("guardarBorrador");
-					$("#pedidosDialogAC").popup("open");
-						
+                    console.log("Ressultado " + result.rows.item(0).n);
+                    getDescripcionAviso("guardarBorrador");
+                    $("#pedidosDialogAC").popup("open");
+
                 } else {
                     getDescripcionAviso("pedidoVacio");
                     $("#pedidosDialogA").popup("open");
@@ -1112,28 +1105,28 @@ function checkPedidoACero() { // Checkeamos que la tabla de nuevo Pedido tiene A
 }
 
 function pRefrescarPantallaActual() {
-		
-	if(localStorage['pantalla']=="emitidos") {
-		
-		pMostrarPedidos();
-		
-		 //alert("pedidos!!!!");
-	} else if(localStorage['pantalla']=="pedidos_plantillas") {
-		pMostrarTodasPlantillas();
-	} 
- 	
+
+    if (localStorage['pantalla'] == "emitidos") {
+
+        pMostrarPedidos();
+
+        //alert("pedidos!!!!");
+    } else if (localStorage['pantalla'] == "pedidos_plantillas") {
+        pMostrarTodasPlantillas();
+    }
+
 }
 
 
 /*
 Funcion utilizada para limpiar variables globales
 */
-function pLimpiarParametrosTemporales(){
-	
-	$('#pDivCheckPrecioDetallePedido').html('<img id="checkPrecioDetallePedido" src="images/uncheck.png" style="width:30px; height:30px">');;
-	$('#pLbpedidosDetalleNuevoPrecio').html('<label id="pLbpedidosDetalleNuevoPrecio" style="font-weight: bold; margin-bottom: 0px;text-align: center;">Mostrar precios</label>');
-	
-	localStorage['panatalla_anterior']="";
+function pLimpiarParametrosTemporales() {
+
+    $('#pDivCheckPrecioDetallePedido').html('<img id="checkPrecioDetallePedido" src="images/uncheck.png" style="width:30px; height:30px">');;
+    $('#pLbpedidosDetalleNuevoPrecio').html('<label id="pLbpedidosDetalleNuevoPrecio" style="font-weight: bold; margin-bottom: 0px;text-align: center;">Mostrar precios</label>');
+
+    localStorage['panatalla_anterior'] = "";
 
 
 }

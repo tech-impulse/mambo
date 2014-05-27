@@ -983,10 +983,11 @@ function pNuevoPedidoInsertarArticuloTemporal(idItem, cantidad, nomCadena) {
                         console.log("Insertamos Global sin EAN");
                         pGlobalEscanerAnadirArticulo($("#InEANPrincipalInsertarPedido").val(), idCadena, cantidad, localStorage["pNuevoPedidoIdCentro"], name, chainName);
                     } else {
-                        console.log("Insertamos Detalle de Pedido temporal por defecto por CADENA ENCONTRADA");
-
-
+                        console.log("Insertamos Detalle de Pedido temporal por defecto por CADENA ENCONTRADA"+cantidad);
+                       
+                        //pModificarDetallePedidoTemporal(idItem, idCadena, cantidad);
                         pInsertarDetallePedidoTemporal(idItem, idCadena, cantidad, name, chainName);
+                        
                     }
 
                 } else {

@@ -246,59 +246,86 @@ function pInsertarDetallePedidoTemporal(idItem, idLogisticChain, quantity, itemN
     var itemName2= itemName;
     var logisticsChainName2 = logisticsChainName;
     db.transaction(function (tx) {
+        
         var idOrder = localStorage['pNuevoPedidoIntenalId'];
-
-        var sql = "SELECT MAX(lineNumber) as l FROM ordersPendingDetail WHERE idInternalOrder=" + idOrder;
-        var nl = 0;
-
-        var unitType = idLogisticChain.substr(0, 1);
-        var ordinalType = idLogisticChain.substr(1, idLogisticChain.length).replace(",",".");
-
-        tx.executeSql(sql, undefined,
-            function (tx, result) {
+        
+        var q="SELECT * FROM ordersPendingDetail WHERE idInternalOrder=" + idOrder+ " AND idItem='"+idItem+"'";
+        
+        tx.executeSql(q, undefined, function (tx, result) {
                 if (result.rows.length > 0) {
-                    if (result.rows.item(0).l == undefined) {
-                        nl = 0;
-                    } else {
-                        nl = result.rows.item(0).l;
-                    }
+                    //YA EXISTE ==> MODIFICARLO
+                    console.log("YA EXISTE EL ELEMENTO ==> MODIFICARLO");
+                     pModificarDetallePedidoTemporal(idItem, idLogisticChain, quantity, itemName, logisticsChainName);
+                } else {
+                   console.log("NUEVO ELEMENTO ==> AÑADIRLO");
+                    var sql = "SELECT MAX(lineNumber) as l FROM ordersPendingDetail WHERE idInternalOrder=" + idOrder;
+                    var nl = 0;
+
+                    var unitType = idLogisticChain.substr(0, 1);
+                    var ordinalType = idLogisticChain.substr(1, idLogisticChain.length).replace(",",".");
+
+                    tx.executeSql(sql, undefined,
+                        function (tx, result) {
+                            if (result.rows.length > 0) {
+                                if (result.rows.item(0).l == undefined) {
+                                    nl = 0;
+                                } else {
+                                    nl = result.rows.item(0).l;
+                                }
+                            }
+
+                            nl++;
+
+
+                             console.log("INSETANDO ARTICULO 2222==> "+itemName2+"|"+logisticsChainName2+"|");
+
+                            var itemName="";
+                            var logisticsChainName="";
+                            var insert = 'INSERT INTO ordersPendingDetail (idInternalOrder, lineNumber, idItem , quantity , idLogisticsChain, unitType ,  ordinalType , itemName , itemStatus , logisticsChainName , logisticsChainStatus ) ' +
+                                'VALUES (' + idOrder + ', "' + nl + '", "' + idItem + '", "' + quantity + '",  "' + idLogisticChain + '", "' + unitType + '", "' + ordinalType + '", "'+itemName2 + '", "0", "'+ logisticsChainName2 + '", "0")';
+
+                            console.log(insert);
+
+                            tx.executeSql(insert, undefined,
+                                function (tx) {
+                                    if (localStorage["ModoEscaner"]!="1")
+                                    pMostrarArticulos();
+                                    else if (localStorage["ModoEscaner"]=="1" && (localStorage["pantalla"]=="pedidosDetalleNuevo" || localStorage["pantalla"]=="pedidosDetalleNuevoEscaner"))
+                                        pRellenarGridNuevoPedido();
+                                }, error);
+                        }, error); 
+                    
+                    
+                    
                 }
+        });
+        
+            
+        
+        
+       
 
-                nl++;
-
-
-                 console.log("INSETANDO ARTICULO 2222==> "+itemName2+"|"+logisticsChainName2+"|");
-
-                var itemName="";
-                var logisticsChainName="";
-                var insert = 'INSERT INTO ordersPendingDetail (idInternalOrder, lineNumber, idItem , quantity , idLogisticsChain, unitType ,  ordinalType , itemName , itemStatus , logisticsChainName , logisticsChainStatus ) ' +
-                    'VALUES (' + idOrder + ', "' + nl + '", "' + idItem + '", "' + quantity + '",  "' + idLogisticChain + '", "' + unitType + '", "' + ordinalType + '", "'+itemName2 + '", "0", "'+ logisticsChainName2 + '", "0")';
-
-                console.log(insert);
-
-                tx.executeSql(insert, undefined,
-                    function (tx) {
-						if (localStorage["ModoEscaner"]!="1")
-                        pMostrarArticulos();
-						else if (localStorage["ModoEscaner"]=="1" && (localStorage["pantalla"]=="pedidosDetalleNuevo" || localStorage["pantalla"]=="pedidosDetalleNuevoEscaner"))
-							pRellenarGridNuevoPedido();
-                    }, error);
-            }, error);
+        
     });
 
 
 }
 
-
 /*
 		Modifica un articulo de un pedido temporal
 */			
-function pModificarDetallePedidoTemporal(idItem, idLogisticChain, quantity) {
+function pModificarDetallePedidoTemporal(idItem, idLogisticChain, quantity, itemName, logisticsChainName) {
     db.transaction(function (tx) {
         var idOrder = localStorage['pNuevoPedidoIntenalId'];
+        
+        
+        if (itemName==undefined) { itemName=""; }
+        else { itemName=itemName.replace(/""/g,"´"); itemName=itemName.replace(/''/g,"´"); }
+        
+        
         var update = "UPDATE ordersPendingDetail SET " +
-            "idLogisticsChain='" + idLogisticChain + "', " +
-            "quantity='" + quantity + "' WHERE idItem='" + idItem + "' AND idInternalOrder='" + idOrder + "'";
+            "idLogisticsChain='" + idLogisticChain + "', itemName='"+itemName+"' , logisticsChainName='"+logisticsChainName+"' , " +
+            "quantity='" + quantity + "' WHERE idItem='" + idItem + "' AND idInternalOrder='" + idOrder + "' ";
         console.log(update);
 
         tx.executeSql(update, undefined,
