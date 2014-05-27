@@ -331,11 +331,13 @@ function pModificarDetallePedidoTemporal(idItem, idLogisticChain, quantity, item
         tx.executeSql(update, undefined,
             function (tx) {
 
-                if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner")
+                if (localStorage["pantalla"] == "pedidosDetalleNuevo" || localStorage["pantalla"] == "pedidosDetalleNuevoEscaner"){
+                    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                     pRellenarGridNuevoPedido();
-                else if  (localStorage["pantalla"] == "insertarArticulos")
+                }else if  (localStorage["pantalla"] == "insertarArticulos"){
+                    console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
                     pMostrarArticulos();
-                else if (localStorage["ModoEscaner"] == "1")
+                }else if (localStorage["ModoEscaner"] == "1")
 		        {
 				   console.log("Abrimos por modoScaner");
 		           $("#pDialogInsertEan").popup("open"); 
