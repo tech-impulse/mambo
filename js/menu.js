@@ -10,12 +10,7 @@ function activate_buttons_footer(boton1, boton2, boton3,boton4,boton5) {
 	var pag_act=0;
 	var pag_last=0;
 	var mr=0;
-	if (localStorage["pantalla"] == "emitidos") // Mostramos el icono de refrescar de agua
-	{
-		$('#pCargaDatos').show();
-	}
-	else
-	$('#pCargaDatos').hide();
+
 	
 	// Recogemos los valores almacenados para cada pantalla
 	if (localStorage["pantalla"]=="emitidos" || localStorage["pantalla"]=="pedidoNuevoAnteriores" || localStorage["pantalla"]=="insertarArticulos" || localStorage["pantalla"]=="pedidos_plantillas" || localStorage["pantalla"]=="pedidosBorradores" || localStorage["pantalla"]=="nuevo_proveedores" || localStorage["pantalla"]=="nuevo_pedido" ) {
@@ -80,15 +75,15 @@ function activate_buttons_footer(boton1, boton2, boton3,boton4,boton5) {
 				console.log("Ninguna pantalla");
 			}	
         
-        document.getElementById("divPaginacionFooter").style.width="23%";
-		  document.getElementById("botonerafooter").style.width="67%";
+        //document.getElementById("divPaginacionFooter").style.width="23%";
+		  //document.getElementById("botonerafooter").style.width="67%";
         
 	} 
 	else 
 	{
 		  //document.getElementById("botonerafooter").style.width="95%";
-		  document.getElementById("divPaginacionFooter").style.width="0%";
-		  document.getElementById("botonerafooter").style.width="90%";
+		 // document.getElementById("divPaginacionFooter").style.width="0%";
+		  //document.getElementById("botonerafooter").style.width="90%";
 		  console.log("aumenta footer");
 			$("#divPag").css('visibility', 'hidden');
 			$("#pBtnPagBack").css('visibility', 'hidden');

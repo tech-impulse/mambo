@@ -769,9 +769,10 @@ function ajustarFooter(permiso) {
     $('#divBoton3').show();
     $('#divBoton4').show();
     $('#divBoton5').show();
-    fdivBotones.setAttribute("style", "width:67%");
-    fdivPaginacion.setAttribute("style", "width:23%");
-    fdivEstado.setAttribute("style", "width:9%");
+    $('#pCargaDatos').hide();
+    fdivBotones.setAttribute("style", "width:71%");
+    fdivPaginacion.setAttribute("style", "width:21%");
+    fdivEstado.setAttribute("style", "width:7%;");
 
     var pantalla = localStorage["pantalla"];
     switch (pantalla) {
@@ -780,10 +781,16 @@ function ajustarFooter(permiso) {
             $('#divBoton1').hide();
         }
         break;
-
+    case "emitidos":
+            fdivBotones.setAttribute("style", "width:60%");
+            fdivPaginacion.setAttribute("style", "width:23%");
+            fdivEstado.setAttribute("style", "width:15%");
+            $('#pCargaDatos').show();
+            break;
     case "pedidos_plantillas_detalle":
     	//$('#divBoton1').hide(); // Cancelar Oculto
         break;
+
 
 	case "pedidosDetalleNuevo":
         //$('#divBoton1').hide(); // Cancelar Oculto
