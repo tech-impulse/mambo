@@ -102,14 +102,14 @@ function CheckResolutionPc() {
     alto_content = (alto - alto_header - alto_footer - (2 * margenes));
     $("#header_pedidos_emitidos").css('height', alto_header);
     $("#footer_comun").css('height', alto_footer);
-    $('style').append('.k-grid tbody tr{height:50px;}');
+    $('style').append('.k-grid tbody tr{height:49px;}');
 
     console.log("Ancho de la pantalla ancho " + an + "alto " + al);
     var alto = $(window).height();
     var max_reg_pag = $(window).height(); //Maximo numero de registros por pagina
-    localStorage["max_row_per_pag"] = Math.floor(alto_content / 50);
-    localStorage["pedidos_detalle_pag_max_row_min"] = Math.floor(alto_content / 50) -4 ;
-    localStorage["pedidos_detalle_pag_max_row_max"] = Math.floor((alto_content / 50) -1 ); 
+    localStorage["max_row_per_pag"] = Math.floor(alto_content / 49);
+    localStorage["pedidos_detalle_pag_max_row_min"] = Math.floor(alto_content / 49) -4 ;
+    localStorage["pedidos_detalle_pag_max_row_max"] = Math.floor((alto_content / 49) -1 ); 
 
     console.log("Paginas por pantalla" + localStorage["max_row_per_pag"]);
 }

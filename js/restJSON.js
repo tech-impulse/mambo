@@ -2460,10 +2460,21 @@ function restPing() {
 		success: function (data, text) {
                         console.log("YESSSS!!!!!");
                             localStorage['online']=1;
+                        $('#imagenConexionMenuPrincipal').html("<a data-role='button' style='background: #e9e9e9; border-color: #e9e9e9; box-shadow:0 0 0; margin-top: 0px; ; padding: 0px' > <img id='status_connection' src='./images/verde.png' style='margin-left: 50px;' align='right'></a>");
+                $('#imagenConexionPedidos').html("<a data-role='button' style='background: #e9e9e9; border-color: #e9e9e9; box-shadow:0 0 0; margin-top: 0px; ; padding: 0px' > <img id='status_connection' src='./images/verde.png' align='right'></a>");
+                $('#imagenConexionMenu').html("<a data-role='button' style='background: #e9e9e9; border-color: #e9e9e9; box-shadow:0 0 0; margin-top: 0px; ; padding: 0px' > <img id='status_connection' src='./images/verde.png' align='right'></a>");
+                    localStorage["token"] = token;
+                        if(localStorage["token"]=="" || localStorage["token"]==true){
+                            $('#pedidosDialogACOrden').text("actualizar");
+                            getToken();                        
+                        }
                      },
 		error:  function (request, status, error) {
                         console.log("KO!!!!!");
                             localStorage['online']=0;
+                         $('#imagenConexionMenuPrincipal').html("<a data-role='button' style='background: #e9e9e9; border-color: #e9e9e9; box-shadow:0 0 0; margin-top: 0px; ; padding: 0px' > <img id='status_connection' src='./images/rojo.png' style='margin-left: 50px;' align='right'></a>");
+                $('#imagenConexionPedidos').html("<a data-role='button' style='background: #e9e9e9; border-color: #e9e9e9; box-shadow:0 0 0; margin-top: 0px; ; padding: 0px' > <img id='status_connection' src='./images/rojo.png'  align='right'></a>");
+                $('#imagenConexionMenu').html("<a data-role='button' style='background: #e9e9e9; border-color: #e9e9e9; box-shadow:0 0 0; margin-top: 0px; ; padding: 0px' > <img id='status_connection' src='./images/rojo.png' align='right'></a>");
 
                     }
 

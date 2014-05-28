@@ -2367,12 +2367,18 @@ $(document).on('pageinit', '#LoginPage', function () {
         if (localStorage["pantalla"] == "dialogoLogin") {
             if (localStorage["checkUsuario"] == "1") {
                 restServices();
-            } else if (localStorage["checkUsuario"] == "2") {
+            } else if (localStorage["checkUsuario"] == "2") { // CASO DE QUE SOLO USUARIO X PUEDE CONECTARSE
                 var pass = document.getElementById('loginDialogPassAC').value;
                 pass = CryptoJS.MD5(pass).toString()
+                localStorage.setItem('usuario',localStorage["ultimo_usuario"]);
+                localStorage.setItem('pass',pass);
+                var auth = make_basic_auth(localStorage["ultimo_usuario"], document.getElementById('loginDialogPassAC').value);	
+                localStorage.setItem('auth',auth);
+                console.log("USUARIO: " + localStorage["ultimo_usuario"] + " PASSWORD " + document.getElementById('loginDialogPassAC').value + " AUTH " + auth);
                 document.getElementById('loginDialogPassAC').innerHTML = "";
                 getValidarUsuario(localStorage.getItem('ultimo_usuario'), pass); // database.js 
             } else if (localStorage["checkUsuario"] == "3") {
+                localStorage.setItem('usuario',localStorage["ultimo_usuario"]);
                 localStorage['pantalla'] = "menuPrincipal";
                 $.mobile.changePage('#menuPrincipal');
             } else if (localStorage["checkUsuario"] == "9" && document.getElementById('loginDialogPassAC').value == "") {

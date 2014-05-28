@@ -10,7 +10,7 @@ function authentication() {
 	token="";
 	localStorage.setItem('auth',auth);
 	//localStorage.setItem('usuario',usuario);
-	localStorage.setItem('pass',passMD5);
+	//localStorage.setItem('pass',passMD5);
 	
 	console.log("login. usuario="+usuario+" password="+passMD5);
 	if (usuario=="" || password=="")
@@ -98,11 +98,12 @@ function checkInicio()
 	if (localStorage["conectado"]=="true") // Estamos Online
 	{
         localStorage.setItem('usuario',document.getElementById('user_txt').value);
+        var passMD5 = CryptoJS.MD5(document.getElementById('pass_txt').value).toString();	
+        localStorage.setItem('pass',passMD5);
 		getToken(); // proceso getToken --> parseTokenJSON --> loginOnline
 	}
 	else
 	{
-        localStorage.setItem('usuario',localStorage["ultimo_usuario"]);
 		traducir();
 		loginOffline();
 	}
@@ -173,7 +174,7 @@ function loginOffline(){
     
     console.log("Loggin Offline");
 	
-	if (localStorage.getItem('ultimo_usuario')!=null)
+	if (localStorage.getItem('ultimo_usuario')!=null && compareTime()<tiempoRecargaBD)
 	{
 		db.transaction (function (transaction) 
 		{  
@@ -182,8 +183,10 @@ function loginOffline(){
 			function (transaction, result)
 			{   
 				var ambito=1;
-				var usuario = localStorage.getItem('usuario');
-				var pass = localStorage.getItem('pass'); 
+				//var usuario = localStorage.getItem('usuario');
+				//var pass = localStorage.getItem('pass'); 
+                var usuario = document.getElementById('user_txt').value;
+	            var pass = CryptoJS.MD5(document.getElementById('pass_txt').value).toString();
 				if (result.rows.length > 0) // Hay usuario guardado
 				{
 					for (var i = 0; i < result.rows.length; i++) 
@@ -191,7 +194,8 @@ function loginOffline(){
 						var u = result.rows.item (i);
 						var usuarioAnterior = u.usuario;
 						var passAnterior = u.pass;
-						}
+				    }
+                    
 					if ((usuarioAnterior == usuario) && (passAnterior==pass))
 					{
                         // Usuario Coincide, Desea continuar sin actualizar la base de datos?
@@ -212,10 +216,10 @@ function loginOffline(){
 	}
 	else
 	{
-        // Usuario no coincide, Para iniciar la aplicación debes estar conectado
+        console.log("Usuario no coincide, Para iniciar la aplicación debes estar conectado");
 		localStorage.setItem('checkUsuario',"2") ;
 		getDescripcionAviso("loginOfflineNoData");
-		$( "#loginDialogAC" ).popup( "open" );
+		$( "#loginDialogA" ).popup( "open" );
 	}
 	
 }
@@ -300,8 +304,7 @@ function parseTokenJSON(response){
 	token = response.body.tokenValue;
 	console.log(" Token de la session " + token);
 	localStorage["token"] = token;	
-	if (accion !="actualizar"){
-        
+	if (accion !="actualizar"){        
         if (token!=null) 
         {
 
