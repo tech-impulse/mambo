@@ -787,6 +787,12 @@ function ajustarFooter(permiso) {
             fdivEstado.setAttribute("style", "width:15%");
             $('#pCargaDatos').show();
             break;
+    case "pedidos_plantillas":
+            fdivBotones.setAttribute("style", "width:60%");
+            fdivPaginacion.setAttribute("style", "width:23%");
+            fdivEstado.setAttribute("style", "width:15%");
+            $('#pCargaDatos').show();
+            break;
     case "pedidos_plantillas_detalle":
     	//$('#divBoton1').hide(); // Cancelar Oculto
         break;

@@ -18,15 +18,15 @@ function pCrearPedidoTemporal(idCentro, idProveedor, tipoIn) {
        		
         // buscamos el primer idLibre 
         var sql = "SELECT MAX(idInternalOrder) as lastId FROM ordersPending";
-        var id = 0;
+
         tx.executeSql(sql, undefined,
             function (tx, result) {
-            	
+            	var id = 0;
                 if ( result.rows.length > 0 ) { id = result.rows.item(0).lastId; }
 
 
-        				if ( localStorage['pLastInternalOrder'] > id ) {	id = parseInt(localStorage['pLastInternalOrder']); } 
-        				else { id= id + 1; }
+        				if ( parseInt(localStorage['pLastInternalOrder']) > id ) {	id = parseInt(localStorage['pLastInternalOrder']); console.log("COGE EL LOCAL "); }
+        				else { id= id + 1;  console.log("COGE EL BD"); }
      
                 //GUARDAMOS LA CABECERA
                 sql = 'INSERT INTO ordersPending (idInternalOrder, idVendor, idPurchaseCenter ,   status ,  username, operacion, tipoInterno ) ' +
@@ -34,14 +34,15 @@ function pCrearPedidoTemporal(idCentro, idProveedor, tipoIn) {
                 console.log("ID INTERNO NUEVO PEDIDO NUEVO 333333= " + sql);
                 tx.executeSql(sql, undefined,
                     function () {
-                    	
+                    	console.log("ANTES ==> " + localStorage['pLastInternalOrder']);
                     	localStorage['pLastInternalOrder']=id + 1;
+                    	console.log("DESPUES ==> " +localStorage['pLastInternalOrder']);
                     	
                     	}, error);
 								
 								
 								
-                localStorage['pNuevoPedidoIntenalId'] = id;
+
 								
 								return id;
             }, error);
@@ -691,10 +692,9 @@ function pGuardarPedidoGlobalTemporalComoBorrador() {
 /*
 
 */
-function pGuardarPlantillaComoPedidoTemporal(reference, tipo) {
+function pGuardarPlantillaComoPedidoTemporal(reference, tipo, operacion) {
 
 	var estadoPendienteEnviar = 3;
-	var operacion = tipo;
 	var insert = "";
 	console.log("El tipo essssss " + tipo);
 
@@ -738,13 +738,13 @@ function pGuardarPlantillaComoPedidoTemporal(reference, tipo) {
 												id = result.rows.item(0).lastId;
 											}
 
-											if (localStorage['pLastInternalOrder'] > id) {
-												id = localStorage['pLastInternalOrder'];
+											if (parseInt(localStorage['pLastInternalOrder']) > id) {
+												id = ( parseInt(localStorage['pLastInternalOrder']) + 1);
 											} else {
 												id = id + 1;
 											}
 
-
+                                            localStorage['pLastInternalOrder']= id;
 											var idtmp = id;
 
 											//PREPARAMOS LA CABECERA
@@ -772,8 +772,10 @@ function pGuardarPlantillaComoPedidoTemporal(reference, tipo) {
 											/*if (tipo == 0 ) {
 												operacion="N";
 											}*/
-											
-											insert = getQueryInsertOrderPending(data, tipo, 'M');
+
+
+
+											insert = getQueryInsertOrderPending(data, tipo , operacion);
 											console.log(insert);
 											tx.executeSql(insert, undefined,
 												function (tx) {
@@ -1070,8 +1072,16 @@ function pGuardarPedidoComoPedidoTemporal(idOrder) {
                         if (max.rows.length > 0) {
 
                             newId = max.rows.item(0).n;
-                            newId++;
+
+                            if (parseInt(localStorage['pLastInternalOrder']) > newId ) { newId=parseInt(localStorage['pLastInternalOrder']) + 1;}
+                            else {
+                                 newId++;
+                            }
+                        } else {
+                            if (parseInt(localStorage['pLastInternalOrder']) > 0 ) { newId=parseInt(localStorage['pLastInternalOrder']) + 1;}
                         }
+
+                        localStorage['pLastInternalOrder']= newId + 1;
 
                         var cab = cabecera.rows.item(0);
 
@@ -1170,22 +1180,26 @@ function pConfirmacionPedidoOk(idOrder, json) {
 						
                 $.each(cab.orderLines, function () {
 
+
+                                       if (this.itemName==undefined) { this.itemName=""; }
+                                       else { this.itemName=this.itemName.replace(/""/g,"´"); this.itemName=this.itemName.replace(/''/g,"´"); }
+
 										sql = "INSERT OR IGNORE INTO ordersDetail ( idOrder, lineNumber, idItem , quantity , firstSizeId , secondSizeId, unitType , ordinalType , idLogisticsChain, itemName, itemStatus, logisticsChainName, logisticsChainStatus) VALUES (";
 										
 										
-										sql=sql+" '"+ cab.internalId+ "' ,";
-										sql=sql+" '"+ this.lineNumber+ "' ,";
-						        sql=sql+" '"+ this.itemId+ "' ,";
-						        sql=sql+" '"+ this.quantity+ "' ,";
-						        sql=sql+" '"+ this.firstSizeId+ "' ,";
-						        sql=sql+" '"+ this.secondSizeId+ "' ,";
-						        sql=sql+" '"+ this.unitType+ "' ,";
-						        sql=sql+" '"+ this.ordinalType+ "' ,";
-						        sql=sql+" '"+ this.logisticsChainId+ "' ,";
-						        sql=sql+" '"+ this.itemName+ "' ,";
-						        sql=sql+" '"+ this.itemStatus+ "' ,";
-						        sql=sql+" '"+ this.logisticsChainName+ "' ,";
-						        sql=sql+" '"+ this.logisticsChainStatus+ "' );";
+										sql=sql+' "'+ cab.internalId+ '" ,';
+										sql=sql+' "'+ this.lineNumber+ '" ,';
+						        sql=sql+' "'+ this.itemId+ '" ,';
+						        sql=sql+' "'+ this.quantity+ '" ,';
+						        sql=sql+' "'+ this.firstSizeId+ '" ,';
+						        sql=sql+' "'+ this.secondSizeId+ '" ,';
+						        sql=sql+' "'+ this.unitType+ '" ,';
+						        sql=sql+' "'+ this.ordinalType+ '" ,';
+						        sql=sql+' "'+ this.logisticsChainId+ '" ,';
+						        sql=sql+' "'+ this.itemName+ '" ,';
+						        sql=sql+' "'+ this.itemStatus+ '" ,';
+						        sql=sql+' "'+ this.logisticsChainName+ '" ,';
+						        sql=sql+' "'+ this.logisticsChainStatus+ '" );';
 
 										console.log(sql);
 										
@@ -1245,7 +1259,7 @@ function pGuardarBorradorComoPedidoTemporal(idOrder, tipo, redireccion){
 		            	
 		                if ( result.rows.length > 0 ) { id = result.rows.item(0).lastId; }
 		
-		        				if ( localStorage['pLastInternalOrder'] > id ) {	id = parseInt(localStorage['pLastInternalOrder']); } 
+		        				if ( parseInt(localStorage['pLastInternalOrder']) > id ) {	id = parseInt(localStorage['pLastInternalOrder']); }
         						else { id= id + 1; }
 
 										var idtmp=id;
@@ -1466,6 +1480,69 @@ function pCerrarPlantilla(idOrder, nombre, zona){
     });
 	
 	
+}
+
+
+
+function pCerrarBorrador(idOrder){
+
+
+    console.log("INICIO CERRAR el PLANTILLA ");
+
+    db.transaction(function (tx) {
+
+
+        // buscamos infomación general y relativa al purchaseCenter
+        var sql = "SELECT c.currency, o.idVendor, o.idPurchaseCenter, o.reference FROM purchaseCenters as c, ordersPending as o WHERE o.idPurchaseCenter=c.idPurchaseCenter AND o.idInternalOrder=" + idOrder;
+        var id = 0;
+        var reference = currency = "";
+
+        console.log("INICIO CERRAR BORRADOR!!!!! el pedido " + sql);
+
+        tx.executeSql(sql, undefined,
+            function (tx, result) {
+
+
+                if (result.rows.length > 0) {
+
+
+                		//Ponemos el valor correcto de Operacion
+										//N= nueva , D= Borrar, M= modificar
+
+/*
+                    reference = "TmpT" + idOrder;
+                    currency = result.rows.item(0).currency;
+
+                    var z="";
+
+                    if (zona=="" || zona==undefined ) { }
+                    else { z='idDeliveryZone="' + zona + '" , "'; }
+
+                    sql = 'UPDATE ordersPending SET '+ z +' unfinished=0, documentDate="' + nowBD() + '", ' +
+                        ' currency="' + currency + '", observaciones="' + nombre + '" , tipoInterno='+TIPO_TEMPORAL_ORDER+', operacion="N" WHERE idInternalOrder=' + idOrder;
+*/
+                    sql = 'UPDATE ordersPending SET  tipoInterno='+TIPO_TEMPORAL_ORDER+', operacion="N" WHERE idInternalOrder=' + idOrder;
+                    console.log("CERRAR BORRADOR PARA ENVIAR = " + sql);
+
+
+                    tx.executeSql(sql, undefined, function () {});
+                    $("#ptxtObservacionesCabecera").val("");
+                    //pMostrarTodasPlantillas();
+
+
+                    pBotonFinalizarNuevoPedido(idOrder) ;
+
+                } else {
+                    console.log("ERROR AL CERRAR EL PEDIDO TMP Centro de compra inexistente.");
+
+                }
+
+            }, error);
+
+
+    });
+
+
 }
 
 

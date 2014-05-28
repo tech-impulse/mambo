@@ -172,10 +172,7 @@ function pNuevoPedidoPostOk(data) {
 	var fin = data.body.entity.transactionId.length;
 
 	var idOrder = data.body.entity.transactionId.substring(ini+4, fin);
-   
-	
-	
-	
+    //var idOrder = data.body.entity.transactionId.split('==')[1];
 
 	//CASO ERROR
 	if (data.body.status == "ERROR") {
@@ -451,7 +448,7 @@ function pEnviarPlantilla(idOrder, reenvio) {
                     var fechaActual = nowBD();
                     fechaActual = formatearFechaWS(fechaActual);
                     res.documentDate = fechaActual;//formatearFechaWS(cab.documentDate); //"2014-03-27T00:00:00+0200";
-                    res.deliveryZoneId = $("#ptxtZonaCabeceraPlantilla").val();//cab.idDeliveryZone;
+                    res.deliveryZoneId = $("#ptxtZonaCabecera").val();//cab.idDeliveryZone;
                     res.isTemplate = 1;
 
                     res.number = cab.number; //?? AL sistema

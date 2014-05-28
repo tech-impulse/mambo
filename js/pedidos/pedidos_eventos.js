@@ -215,7 +215,7 @@ function getControlEventosPedidos() {
             localStorage["pantalla_anterior"] = "pedidos_plantillas_detalle";
             insertLog(3, 5, "Origen de alta de pedido", "En base a plantilla");
             localStorage["pantalla_anterior"] = "";
-            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(), "N");
+            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(), TIPO_TEMPORAL_ORDER, "N");
 
 
         } else if (localStorage["pantalla"] == "borradoresDetalle") {
@@ -287,7 +287,7 @@ function getControlEventosPedidos() {
         } else if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
             // MODIFICAR
             console.log(" PLANTILLA A MODIFICAR  => " + $("#pTxtNuevoPedidoPlantillaRef").val());
-            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(), "M");
+            pGuardarPlantillaComoPedidoTemporal($("#pTxtNuevoPedidoPlantillaRef").val(), TIPO_TEMPORAL_TEMPLATE,  "M");
 
         } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
             // GUARDAR BORRADOR 
@@ -351,8 +351,8 @@ function getControlEventosPedidos() {
 
         if (localStorage["pantalla"] == "pedidos_plantillas_detalle") {
             // MODIFICAR
-            pGuardarPlantillaComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId']);
-            pRellenarGridNuevoPedido();
+            //pGuardarPlantillaComoPedidoTemporal(localStorage['pNuevoPedidoIntenalId']);
+            //pRellenarGridNuevoPedido();
         } else if (localStorage["pantalla"] == "insertarArticulos") { //pedidosResumenNuevoPedido
             // FINALIZAR INSERCIÓN
             pRellenarGridNuevoPedido();
@@ -446,6 +446,14 @@ function getControlEventosPedidos() {
 
                     });
             });
+
+        }
+         else if (localStorage["pantalla"] == "pedidos_cabecera" && localStorage["pantalla_anterior"] == "borradoresDetalle") {
+                //ENviamos un borrador
+                console.log("ENVIAMOS UN BORRADOR");
+                pCerrarBorrador(localStorage['pNuevoPedidoIntenalId']);
+
+
 
         } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#fbtn2').is(":hidden") || localStorage["pantalla"] == "pedidosResumenNuevoPedido") {
             displayCabeceraPedido();

@@ -11,10 +11,7 @@ function pSincronizar( ) {
 	
 	var res={};
 
-	setInterval(function () {
-	    restPing();
 
-	}, 30000);
 
 	setInterval(function () {
 

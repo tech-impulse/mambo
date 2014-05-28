@@ -221,8 +221,8 @@ function getTraduccionPedidos() {
         localStorage.setItem('footer_btn_pedido_base', 'Seleccionar como P. Base');
         localStorage.setItem('footer_btn_pedido_escaner', 'Pedido global en base a escaner');
         localStorage.setItem('footer_btn_nuevo_pedido', 'Nuevo Pedido por articulos');
-        localStorage.setItem('footer_btn_guardar_borrador', 'Guardar Borrador');
-        localStorage.setItem('footer_btn_guardar_plantilla', 'Guardar Plantilla');
+       // localStorage.setItem('footer_btn_guardar_borrador', 'Guardar Borrador'); // AHora en AjustesPantalla.js
+        //localStorage.setItem('footer_btn_guardar_plantilla', 'Guardar Plantilla');
         localStorage.setItem('footer_btn_insertar_articulo', 'Insertar Art.');
         localStorage.setItem('footer_btn_codigo_barras', 'Escaner');
         localStorage.setItem('footer_btn_finalizar', 'Finalizar');

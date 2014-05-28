@@ -1040,12 +1040,18 @@ function _createTableOrders(backUp) {
 }
 
 
-function getQueryInsertOrder(data) {
-	
+function getQueryInsertOrder(data, tmp) {
+
+
 	var tabla="orders";
+	if ( tmp!="" && tmp != undefined ) { tabla="orders_tmp"; }
+
+
 	
 	//if (localStorage['pModoCargaParcial']=="PO" || localStorage['pModoCargaParcial']=="TOTAL") { tabla="back_orders"; console.log("AQUI!!!! ") }
-	
+
+
+
   var q= 'INSERT OR IGNORE INTO '+tabla+' (idOrder, idVendor, idPurchaseCenter , idDeliveryZone, reference , status , deliveryDate , documentDate , amount , currency , observaciones,  number , sourceId, type ) ' + 
   				'VALUES ('+ data.idInternal+', "'+ data.idVendor+'", "'+ data.idPurchaseCenter+'", "'+ data.idDeliveryZone+'", "'+ data.reference+'", "'+ data.status+'", "'+ data.deliveryDate+'", "'+ data.documentDate+'", "'+ data.amount+'", "'+ data.currency+'", "'+ data.observaciones+'", "'+ data.number+'","'+ data.sourceId+'","'+ data.type+'")';
   
@@ -1088,11 +1094,13 @@ function _createTableOrderDetails(backUp) {
 	}
 }
 
-function getQueryInsertOrderDetail(data) {
+function getQueryInsertOrderDetail(data, tmp) {
 	
+
 	var tabla="ordersDetail";
-	//if (localStorage['pModoCargaParcial']=="PO" || localStorage['pModoCargaParcial']=="TOTAL") tabla="tmp_ordersDetail";  	
-	
+    	if ( tmp!="" && tmp != undefined ) { tabla="ordersDetail_tmp"; }
+
+
   var q= 'INSERT OR IGNORE INTO '+tabla+' (idOrder, lineNumber, idItem , quantity ,  unitType , idLogisticsChain, firstSizeId, secondSizeId,  ordinalType , itemName , itemStatus , logisticsChainName , logisticsChainStatus ) ' + 
   				'VALUES ('+ data.idOrder+', "'+ data.lineNumber+'", "'+ data.idItem+'", "'+ data.quantity+'", "'+ data.unitType+'", "'+ data.idLogisticsChain+'","'+ data.firstSizeId+'","'+ data.secondSizeId+'","'+ data.ordinalType+'","'+ data.itemName+'","'+ data.itemStatus+'","'+ data.logisticsChainName+'","'+ data.logisticsChainStatus+'")';
   		
@@ -1325,11 +1333,14 @@ function _createTableOrdersTemplate(backUp) {
 }
 
 
-function getQueryInsertOrdersTemplates(data) {
-	
+function getQueryInsertOrdersTemplates(data, tmp) {
+
+	var tabla="ordersTemplates";
+    if ( tmp!="" && tmp != undefined ) { tabla="ordersTemplates_tmp"; }
+
 	if (data.status==undefined) { data.status=7; }
 	
-  return 'INSERT OR IGNORE INTO ordersTemplates (idTemplate, idVendor, idPurchaseCenter , idDeliveryZone, reference , name, amount , currency , name, documentDate , number, sourceId, type, status ) ' + 
+  return 'INSERT OR IGNORE INTO '+tabla+' (idTemplate, idVendor, idPurchaseCenter , idDeliveryZone, reference , name, amount , currency , name, documentDate , number, sourceId, type, status ) ' +
    				'VALUES ('+ data.idTemplate+', "'+ data.idVendor+'", "'+ data.idPurchaseCenter+'", "'+ data.idDeliveryZone+'", "'+ data.reference+'", "'+ data.name+'", "'+ data.amount+'", "'+ data.currency+'", "'+ data.name+'", "'+ data.documentDate+'", "'+ data.number+'", "'+ data.sourceId+'", "'+ data.type+'", "'+ data.status+'" )';
    
 }
@@ -1369,9 +1380,11 @@ function _createTableOrderTemplatesDetails(backUp) {
 }
 
 
-function getQueryInsertOrdersTemplatesDetail(data) {
-	
-  return 'INSERT OR IGNORE INTO ordersTemplatesDetail (idTemplate, lineNumber, idItem , quantity ,  unitType , idLogisticsChain, firstSizeId, secondSizeId,  ordinalType , itemName, itemStatus, logisticsChainName, logisticsChainStatus ) ' + 
+function getQueryInsertOrdersTemplatesDetail(data, tmp) {
+	var tabla="ordersTemplatesDetail";
+        if ( tmp!="" && tmp != undefined ) { tabla="ordersTemplatesDetail_tmp"; }
+
+  return 'INSERT OR IGNORE INTO '+tabla+' (idTemplate, lineNumber, idItem , quantity ,  unitType , idLogisticsChain, firstSizeId, secondSizeId,  ordinalType , itemName, itemStatus, logisticsChainName, logisticsChainStatus ) ' +
   				'VALUES ('+ data.idTemplate+', "'+ data.lineNumber+'", "'+ data.idItem+'", "'+ data.quantity+'", "'+ data.unitType+'", "'+ data.idLogisticsChain+'","'+ data.firstSizeId+'","'+ data.secondSizeId+'","'+ data.ordinalType+'","'+ data.itemName+'","'+ data.itemStatus+'","'+ data.logisticsChainName+'","'+ data.logisticsChainStatus+'" )';
    
 }
@@ -2007,7 +2020,6 @@ function pBorrarPedidosPendientes() {
 			sql = "DELETE FROM ordersPending WHERE error=0 AND transactionCode='' "
 			transaction.executeSql(sql, undefined, function () {
 				sql = "DELETE FROM ordersPendingDetail WHERE ordersPendingDetail.idInternalOrder NOT IN (SELECT ordersPendingDetail.idInternalOrder FROM ordersPending  WHERE ordersPendingDetail.idInternalOrder=ordersPending.idInternalOrder)"
-                console.log("SQL-----> " + sql);
 				transaction.executeSql(sql, undefined, function () {}, error);
 			}, error);
 		});

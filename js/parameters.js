@@ -2,10 +2,10 @@
 var host = "http://bus.grupoareas.com:8084/v0.1";
 //var port = "8086";
 var token = "";
-var versionApp = "1.1.4"; //  23/05/2014
+var versionApp = "1.1.5"; //  27/05/2014
 var tiempoRecargaBD = 360; // Horas en minutos para recargar la base de datos
 var transactionId = "";
-var tiempoSincronismo= 400000;
+var tiempoSincronismo= 500000;
 
 var TIPO_TEMPORAL_ORDER=0;
 var TIPO_TEMPORAL_TEMPLATE=1;

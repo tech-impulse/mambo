@@ -9,7 +9,7 @@ function authentication() {
 	var auth = make_basic_auth(usuario, password);	
 	token="";
 	localStorage.setItem('auth',auth);
-	localStorage.setItem('usuario',usuario);
+	//localStorage.setItem('usuario',usuario);
 	localStorage.setItem('pass',passMD5);
 	
 	console.log("login. usuario="+usuario+" password="+passMD5);
@@ -95,12 +95,14 @@ function progress(percent, textoProgreso) {
 function checkInicio() 
 {
    
-	if (navigator.onLine) // Estamos Online
+	if (localStorage["conectado"]=="true") // Estamos Online
 	{
+        localStorage.setItem('usuario',document.getElementById('user_txt').value);
 		getToken(); // proceso getToken --> parseTokenJSON --> loginOnline
 	}
 	else
 	{
+        localStorage.setItem('usuario',localStorage["ultimo_usuario"]);
 		traducir();
 		loginOffline();
 	}
@@ -168,6 +170,8 @@ function loginOnline(res)
 }
 
 function loginOffline(){
+    
+    console.log("Loggin Offline");
 	
 	if (localStorage.getItem('ultimo_usuario')!=null)
 	{
@@ -290,7 +294,7 @@ function checkScopes(res){
 }
 
 function parseTokenJSON(response){	
-                          
+    
   //console.log(JSON.stringify(response));
     var accion = $('#pedidosDialogACOrden').text();
 	token = response.body.tokenValue;
