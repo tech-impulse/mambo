@@ -454,7 +454,7 @@ function pGuardarPedidoTemporalComoBorrador(idOrder, param) {
 							    });
 					  		});
 					  	
-					  } else  if (cab.tipoInterno==TIPO_TEMPORAL_ORDER || cab.tipoInterno=="N" ) {
+					  } else  if (cab.tipoInterno==TIPO_TEMPORAL_ORDER ) {
 
 							sql = "SELECT MAX(idInternalOrder) as n FROM ordersDraft ";
 	 						//console.log("INICIO 222222 BORRADOR el pedido "+sql)	;
@@ -692,10 +692,9 @@ function pGuardarPedidoGlobalTemporalComoBorrador() {
 /*
 
 */
-function pGuardarPlantillaComoPedidoTemporal(reference, tipo) {
+function pGuardarPlantillaComoPedidoTemporal(reference, tipo, operacion) {
 
 	var estadoPendienteEnviar = 3;
-	var operacion = tipo;
 	var insert = "";
 	console.log("El tipo essssss " + tipo);
 
@@ -773,8 +772,10 @@ function pGuardarPlantillaComoPedidoTemporal(reference, tipo) {
 											/*if (tipo == 0 ) {
 												operacion="N";
 											}*/
-											
-											insert = getQueryInsertOrderPending(data, tipo, 'M');
+
+
+
+											insert = getQueryInsertOrderPending(data, tipo , operacion);
 											console.log(insert);
 											tx.executeSql(insert, undefined,
 												function (tx) {
@@ -1479,6 +1480,69 @@ function pCerrarPlantilla(idOrder, nombre, zona){
     });
 	
 	
+}
+
+
+
+function pCerrarBorrador(idOrder){
+
+
+    console.log("INICIO CERRAR el PLANTILLA ");
+
+    db.transaction(function (tx) {
+
+
+        // buscamos infomación general y relativa al purchaseCenter
+        var sql = "SELECT c.currency, o.idVendor, o.idPurchaseCenter, o.reference FROM purchaseCenters as c, ordersPending as o WHERE o.idPurchaseCenter=c.idPurchaseCenter AND o.idInternalOrder=" + idOrder;
+        var id = 0;
+        var reference = currency = "";
+
+        console.log("INICIO CERRAR BORRADOR!!!!! el pedido " + sql);
+
+        tx.executeSql(sql, undefined,
+            function (tx, result) {
+
+
+                if (result.rows.length > 0) {
+
+
+                		//Ponemos el valor correcto de Operacion
+										//N= nueva , D= Borrar, M= modificar
+
+/*
+                    reference = "TmpT" + idOrder;
+                    currency = result.rows.item(0).currency;
+
+                    var z="";
+
+                    if (zona=="" || zona==undefined ) { }
+                    else { z='idDeliveryZone="' + zona + '" , "'; }
+
+                    sql = 'UPDATE ordersPending SET '+ z +' unfinished=0, documentDate="' + nowBD() + '", ' +
+                        ' currency="' + currency + '", observaciones="' + nombre + '" , tipoInterno='+TIPO_TEMPORAL_ORDER+', operacion="N" WHERE idInternalOrder=' + idOrder;
+*/
+                    sql = 'UPDATE ordersPending SET  tipoInterno='+TIPO_TEMPORAL_ORDER+', operacion="N" WHERE idInternalOrder=' + idOrder;
+                    console.log("CERRAR BORRADOR PARA ENVIAR = " + sql);
+
+
+                    tx.executeSql(sql, undefined, function () {});
+                    $("#ptxtObservacionesCabecera").val("");
+                    //pMostrarTodasPlantillas();
+
+
+                    pBotonFinalizarNuevoPedido(idOrder) ;
+
+                } else {
+                    console.log("ERROR AL CERRAR EL PEDIDO TMP Centro de compra inexistente.");
+
+                }
+
+            }, error);
+
+
+    });
+
+
 }
 
 
