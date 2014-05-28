@@ -249,13 +249,13 @@ function pInsertarDetallePedidoTemporal(idItem, idLogisticChain, quantity, itemN
         
         var idOrder = localStorage['pNuevoPedidoIntenalId'];
         
-        var q="SELECT * FROM ordersPendingDetail WHERE idInternalOrder=" + idOrder+ " AND idItem='"+idItem+"'";
+        var q="SELECT * FROM ordersPendingDetail WHERE idInternalOrder=" + idOrder+ " AND idItem='"+idItem+"'";//comprobamos si el articulo a insertar existe
         
         tx.executeSql(q, undefined, function (tx, result) {
                 if (result.rows.length > 0) {
                     //YA EXISTE ==> MODIFICARLO
                     console.log("YA EXISTE EL ELEMENTO ==> MODIFICARLO");
-                     pModificarDetallePedidoTemporal(idItem, idLogisticChain, quantity, itemName, logisticsChainName);
+                    pModificarDetallePedidoTemporal(idItem, idLogisticChain, quantity, itemName, logisticsChainName);
                 } else {
                    console.log("NUEVO ELEMENTO ==> AÑADIRLO");
                     var sql = "SELECT MAX(lineNumber) as l FROM ordersPendingDetail WHERE idInternalOrder=" + idOrder;

@@ -273,9 +273,8 @@ function pOrdenacionArt(Grid, nombreColumn, nombreImg, tipo) {//mantiene la orde
 
 function pOrdenacionArticulos(Grid, nombreColumn, nombreImg, tipo) {
 
-    var aux = localStorage.getItem('sortgrid');
-    localStorage['mantenerOrdenacionGrid']=aux;//guardamos la ordenacion que tenemos ahora mismo para recuperarla en caso que se pagine
-
+    var aux = localStorage['sortgrid'];
+    
     switch (aux) {
     case "0":
         var tipoOrdenacion = "desc";
@@ -286,6 +285,7 @@ function pOrdenacionArticulos(Grid, nombreColumn, nombreImg, tipo) {
             dir: "desc"
         });
         grid.refresh();
+        localStorage['mantenerOrdenacionGrid']=localStorage['sortgrid'];//guardamos la ordenacion que tenemos ahora mismo para recuperarla en caso que se pagine
         localStorage.setItem('sortgrid', "1");
         localStorage['imagenOrdenacion'] = nombreImg;
         $('#' + nombreImg).attr("src", "./images/sort_desc.png");
@@ -300,13 +300,15 @@ function pOrdenacionArticulos(Grid, nombreColumn, nombreImg, tipo) {
             dir: "asc"
         });
         grid.refresh();
+        localStorage['mantenerOrdenacionGrid']=localStorage['sortgrid'];
         localStorage.setItem('sortgrid', "2");
         $('#' + nombreImg).attr("src", "./images/sort_asc.png");
-        localStorage["columnaOrdena"] = nombreColumn;
+        localStorage["columnaOrdena"] = nombreColumn; 
         localStorage['imagenOrdenacion'] = nombreImg;
         break;
     case "2":
         $("#" + Grid).data("kendoGrid").dataSource.sort({});
+        localStorage['mantenerOrdenacionGrid']=localStorage['sortgrid'];
         localStorage.setItem('sortgrid', "0");
         $('#' + nombreImg).attr("src", "./images/sort_both.png");
         localStorage["columnaOrdena"] = nombreColumn;
