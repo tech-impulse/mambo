@@ -37,6 +37,7 @@ function pCrearPedidoTemporal(idCentro, idProveedor, tipoIn) {
                     	console.log("ANTES ==> " + localStorage['pLastInternalOrder']);
                     	localStorage['pLastInternalOrder']=id + 1;
                     	console.log("DESPUES ==> " +localStorage['pLastInternalOrder']);
+                        localStorage['pNuevoPedidoIntenalId'] = id;
                     	
                     	}, error);
 								

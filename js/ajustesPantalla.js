@@ -10,8 +10,11 @@ function CheckResolutionMobile() {
     $("#header_pedidos_emitidos").css('height', alto_header);
     $("#footer_comun").css('height', alto_footer);
     $('style').append('.k-grid tbody tr{height:48px; font-size:14px;} .k-grid-header { font-size:13px;} .ui-btn-text { font-size: 11px;}');
-    localStorage.setItem('footer_btn_guardar_borrador', 'Guardar Borrador');
-    localStorage.setItem('footer_btn_guardar_plantilla', 'Guardar Plantilla');
+        if (localStorage['language']=="ES")
+            {
+                localStorage.setItem('footer_btn_guardar_borrador', 'Guardar Borrador');
+                localStorage.setItem('footer_btn_guardar_plantilla', 'Guardar Plantilla');
+            }
 
     if (al >= 1080) { //FULL HD
         if (alto >400){

@@ -60,6 +60,7 @@ function progressTime(percent, clearTimeout) {
 
 
 $(document).on('pageinit', '#LoginPage', function () {
+    token="token";
     restPing();
     setInterval(function () {
     	    restPing();
