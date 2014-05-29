@@ -20,7 +20,9 @@ $(document).on('pageinit', '#progressPage', function () {
 
     var tm = "";
     var ts = "";
-    kendo.culture("es-ES");
+    if(localStorage['language']=="ES"){
+        kendo.culture("es-ES");
+    }
 
     localStorage['tcarga'] = 0;
 
@@ -63,9 +65,16 @@ $(document).on('pageinit', '#LoginPage', function () {
     token="token";
     restPing();
     setInterval(function () {
-    	    restPing();
+        restPing();
+        var imga = document.getElementById('pCargaDatos').innerHTML;
 
-    	}, 30000);
+        if (localStorage['online'] == 0 && imga.localeCompare('<img src="./images/loading.gif">') == 1) { //si estamos offline y la imagen es de recarga
+            getDescripcionAviso("refrescarOffLine");
+            setTimeout$('"#pedidosDialogRefrescar").popup("open");',300);
+            $('#pCargaDatos').html('<img src="./images/btn_refresh.png">');
+        }
+
+    }, 30000);
 
     $('input').focus();
     localStorage["pantalla_anterior"] = "";
@@ -1333,8 +1342,14 @@ $(document).on('pageinit', '#LoginPage', function () {
 
         if (localStorage["pantalla"] == "emitidos") {
 
-            getDescripcionAviso("refrescar");
-            $("#pedidosDialogRefrescar").popup("open");
+            if (localStorage["conectado"] == "false") {
+                getDescripcionAviso("refrescarOffLine");
+                $("#pedidosDialogRefrescar").popup("open");
+            } else {
+                getDescripcionAviso("refrescar");
+                $("#pedidosDialogRefrescar").popup("open");
+            }
+
 
         } else if (localStorage["pantalla"] == "pedidosDetalle") {
 
@@ -1367,9 +1382,13 @@ $(document).on('pageinit', '#LoginPage', function () {
 
         if (localStorage["pantalla"] == "emitidos") {
 
-            $("#pedidosDialogRefrescar").popup("close");
+            if (localStorage["conectado"] == "false") {
+                $("#pedidosDialogRefrescar").popup("close");
+            } else {
+                $("#pedidosDialogRefrescar").popup("close");
+                pCargarParcialPedidos();
+            }
 
-            pCargarParcialPedidos();
             //$('#pGridPedidos').data('kendoGrid').dataSource.read();
             //$('#pGridPedidos').data('kendoGrid').refresh();
 
@@ -1420,7 +1439,7 @@ $(document).on('pageinit', '#LoginPage', function () {
         $("#pedidosDialogRefrescar").popup("close");
 
     });
-    
+
     /////////////////////////////////////////////////////////////////////////////////////
     //Filtro de la cabecera 
     $('#searchText').keyup(function (event) {
@@ -1516,7 +1535,7 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             displayDetail();
 
-        }else if (localStorage["pantalla"] == "pedidosBorradores") {
+        } else if (localStorage["pantalla"] == "pedidosBorradores") {
 
             var textSerch = $('#searchText').val();
             var gridDet = $("#pGridBorradores").data("kendoGrid");
@@ -1540,7 +1559,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             };
 
             gridDet.dataSource.filter(filterDet);
-            
+
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridBorradores").data("kendoGrid").dataSource;
@@ -1549,10 +1568,10 @@ $(document).on('pageinit', '#LoginPage', function () {
             var queryDet = new kendo.data.Query(allDataDet);
             var dataDet = queryDet.filter(filtersDetalle).data;
 
-            localStorage["pedidos_pag_act"]=1;
-            localStorage["pedidos_pag_max_row"]=parseInt(localStorage.getItem("max_row_per_pag"));
-            localStorage["pedidos_pag_last"]=	Math.ceil(dataDet.length / parseInt(localStorage["pedidos_pag_max_row"]) );
-            displayBorradores(); 
+            localStorage["pedidos_pag_act"] = 1;
+            localStorage["pedidos_pag_max_row"] = parseInt(localStorage.getItem("max_row_per_pag"));
+            localStorage["pedidos_pag_last"] = Math.ceil(dataDet.length / parseInt(localStorage["pedidos_pag_max_row"]));
+            displayBorradores();
 
 
         }else if (localStorage["pantalla"] == "borradoresDetalle") {
@@ -1778,6 +1797,21 @@ $(document).on('pageinit', '#LoginPage', function () {
             var allDataDet = dataSourceDetalle.data();
             var queryDet = new kendo.data.Query(allDataDet);
             var dataDet = queryDet.filter(filtersDetalle).data;
+            
+            var grid = $("#pGridNuevoPedido").data("kendoGrid");
+
+            if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") > 0) { // Esta des-seleccionado --> No hay que mostrar precios
+                console.log("Escondemos la columna de precios");
+                grid.showColumn("precios");
+                grid.hideColumn("precios");
+            } else if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") < 0) {
+                console.log("Escondemos las columnas de cad_log y totales");
+                grid.showColumn("precios");
+                grid.showColumn("uds");
+                grid.hideColumn("uds");
+                grid.showColumn("cad_log");
+                grid.hideColumn("cad_log");
+            }
 
             var mr = parseInt(localStorage["pedidos_detalle_pag_max_row"]);
 
@@ -2137,6 +2171,20 @@ $(document).on('pageinit', '#LoginPage', function () {
             gridDetPlan.dataSource.filter([]);
             var dataSourceDetallePlan = $("#pGridNuevoPedido").data("kendoGrid").dataSource;
             var allDataDetPlan = dataSourceDetallePlan.data();
+            
+            var grid = $("#pGridNuevoPedido").data("kendoGrid");
+            if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") > 0) { // Esta des-seleccionado --> No hay que mostrar precios
+                console.log("Escondemos la columna de precios");
+                grid.showColumn("precios");
+                grid.hideColumn("precios");
+            } else if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") < 0) {
+                console.log("Escondemos las columnas de cad_log y totales");
+                grid.showColumn("precios");
+                grid.showColumn("uds");
+                grid.hideColumn("uds");
+                grid.showColumn("cad_log");
+                grid.hideColumn("cad_log");
+            }
 
             localStorage["pedidos_detalle_pag_act"] = 1;
             localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["max_row_per_pag"]) - 2;
@@ -2189,6 +2237,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_pag_last"] = Math.ceil(parseInt(allData.length) / parseInt(mr));
 
             displayPedidosAnterioresNuevoPedido();
+            
         } else if (localStorage["pantalla"] == "pedidoNuevoPlantillas") {
 
             var grid = $("#pGridPedidosPlantillas").data("kendoGrid");
@@ -2228,26 +2277,26 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(allData.length / parseInt(localStorage["pedidos_detalle_pag_max_row"]));
 
             displayResumenNuevoPedido();
-        }else if (localStorage["pantalla"] == "pedidosBorradores") {
-            
+        } else if (localStorage["pantalla"] == "pedidosBorradores") {
+
             var grid = $("#pGridBorradores").data("kendoGrid");
             grid.dataSource.filter([]);
             var dataSource = $("#pGridBorradores").data("kendoGrid").dataSource;
-            var allData = dataSource.data(); 
-            
-            localStorage["pedidos_pag_act"]=1;
-            localStorage["pedidos_pag_max_row"]=parseInt(localStorage.getItem("max_row_per_pag"));
-            localStorage["pedidos_pag_last"]=	Math.ceil(allData.length / parseInt(localStorage["pedidos_pag_max_row"]) );
-            displayBorradores(); 
+            var allData = dataSource.data();
 
-            
-        }else if (localStorage["pantalla"] == "borradoresDetalle") {
-            
+            localStorage["pedidos_pag_act"] = 1;
+            localStorage["pedidos_pag_max_row"] = parseInt(localStorage.getItem("max_row_per_pag"));
+            localStorage["pedidos_pag_last"] = Math.ceil(allData.length / parseInt(localStorage["pedidos_pag_max_row"]));
+            displayBorradores();
+
+
+        } else if (localStorage["pantalla"] == "borradoresDetalle") {
+
             var grid = $("#pGridDetalleBorrador").data("kendoGrid");
             grid.dataSource.filter([]);
             var dataSource = $("#pGridDetalleBorrador").data("kendoGrid").dataSource;
             var allData = dataSource.data();
-            
+
             localStorage["pedidos_detalle_pag_act"] = 1;
             localStorage["pedidos_detalle_pag_max_row"] = localStorage["max_row_per_pag"] - 2;
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(allData.length / localStorage["pedidos_detalle_pag_max_row"]);

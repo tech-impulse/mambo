@@ -292,6 +292,9 @@ function addAllItems(data) {
     "udsFmt": "UN"
 		*/
 
+	var uri = "/items/";
+    insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
+
 		var debug=0;
         console.log("WS ITEMS RECIBIDO!!!!!");
     if (debug==1) console.log("JSON de Items");
@@ -368,9 +371,16 @@ function addAllItems(data) {
 				        localStorage["nItem"]=parseInt(localStorage["nItem"]) + 1;
                         //console.log("INSERTADO MAX =" + localStorage["maxItem"] + " ACTUAL = " + localStorage["nItem"]);
 				        if ( parseInt(localStorage["nItem"]) ==  parseInt(localStorage["maxItem"]) ) {
+
+
+				            insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+localStorage["nItem"],"" );
+
                             var estado= 6;
                             localStorage['cargaPaso6']=1;
                             cargadoTotal(estado);
+
+
+
                             console.log("BD FIN de lote ITEMS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 				        }
@@ -439,7 +449,8 @@ function restPurchaseCenterJSON() {
 function addPuchaseCenter(data){	
 		
 		var debug=0;
-
+    var uri = "/purchasecenters/";
+        insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
     console.log("JSON de CENTROS DE VENTA");
     //if (debug==1) { console.log(JSON.stringify(data)); }
         
@@ -489,7 +500,7 @@ function addPuchaseCenter(data){
 				    }, controlErrorCarga);
 				     
 				  }
-			  
+			    insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
 			    var estado= 1;
 			  	
 			  	//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
@@ -537,7 +548,8 @@ var uri = "/purchasecenters/vendors/items/eans/";			var dir = host+uri;
 function addEANs(data){	
 		
 		var debug=0;
-
+ var uri = "/purchasecenters/vendors/items/eans/";
+        insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
     console.log("JSON de EANS");
     //if (debug==1) { console.log(JSON.stringify(data)); }
         
@@ -605,7 +617,7 @@ function addEANs(data){
 			    var estado= 7;
 			  	
 			  	//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
-			  	
+			  	insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
 			  	localStorage['porcentageCarga']= parseInt(localStorage['porcentageCarga'])+ _porEAN;
 			  	localStorage['cargaPaso7']=1;
 			  	
@@ -647,9 +659,10 @@ function restDeliveryZonesJSON() {
 function addDeliveryZones(data){	
 		
 		var debug=0;
-	
+	var uri = "/purchasecenters/deliveryzones/";
+            insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
     console.log("JSON de Zonas de entrega");
-    console.log(JSON.stringify(data));
+    //console.log(JSON.stringify(data));
         
     var y = 0;
     var error= 0;
@@ -711,7 +724,8 @@ function addDeliveryZones(data){
 			  
 			  	var estado= 2;
 			  	//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
-			  	
+			  	insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
 		  		localStorage['porcentageCarga']= parseInt(localStorage['porcentageCarga']) + _porZones;
 		  		localStorage['cargaPaso2']=1;
 			  	progress(parseInt(localStorage['porcentageCarga']), getEstadoCargaAsincrono(estado) );
@@ -751,7 +765,11 @@ function restPurchaseCentersAllVendorsJSON() {
 
 
 function addPurchaseCentersAllVendors(data){	
-		
+
+
+			var uri = "/purchasecenters/vendors/";
+                        insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
+
 		var debug=0;
 	
     if (debug==1) console.log("JSON de Purchase Centers -> Vendors");
@@ -810,7 +828,8 @@ function addPurchaseCentersAllVendors(data){
 			  	
 			  	var estado= 3;
 			  	//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
-          
+            insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
           localStorage['porcentageCarga']= parseInt(localStorage['porcentageCarga']) + _porRelVendor;
           localStorage['cargaPaso3']=1;
 			  	progress(parseInt(localStorage['porcentageCarga']), getEstadoCargaAsincrono(estado) );
@@ -833,9 +852,15 @@ function error2() {
 
 //Maestro Proveedores
 function addAllVendors() {
+
+var uri = "/purchasecenters/xxxx/vendors/";
+                        insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
+
    db.transaction ( 
 		  function (transaction) 
 		  {
+
+
         //Buscamos todos los centros de venta
 		    var q="SELECT DISTINCT(idPurchaseCenter) FROM relPurchaseCenter_Vendors";
         transaction.executeSql (q, [],  function (transaction, result)
@@ -852,7 +877,7 @@ function addAllVendors() {
 						
 						if (result.rows.length==0) { console.log("000000000000000000000000000000000000000000000000000000000000000000"); }
 						
-						
+						insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
 						var estado= 4;
 			  		//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
 			  		localStorage['porcentageCarga']= parseInt(localStorage['porcentageCarga']) + _porVendors;
@@ -894,7 +919,10 @@ function restVendorJSON(idPurchaseCenter) {
 
 
 function addDetailVendors(data){	
-	
+
+	var uri = "/purchasecenters/vendors/";
+                            insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
+
     console.log("JSON de los Proveedores -------------------------------------------------------- ");
     //console.log(JSON.stringify(data));
   	
@@ -961,7 +989,7 @@ function addDetailVendors(data){
 			    }, controlErrorCarga);
 		   							     
 			  }
- 
+ insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
        // if (debug==1) console.log("Guardando Proveedores");	
 			}
 		);
@@ -1254,7 +1282,9 @@ function restCatalogJSON() {
 
 
 function addCatalog(data){	
-		
+
+			var uri = "/purchasecenters/vendors/items/";
+                                        insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
 		var debug=0;
 	
     if (debug==1) console.log("JSON de Catalog");
@@ -1305,7 +1335,9 @@ function addCatalog(data){
 				    }, controlErrorCarga);
 				     
 				  }
-			  	
+
+			  	insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
 			  	var estado= 8;
 			  	
 			  	localStorage['cargaPaso8']="1";
@@ -1324,8 +1356,8 @@ function addCatalog(data){
 
 
 function restLogisticChainsJSON() {
+    var uri = "/purchasecenters/vendors/items/logisticschains";
 
-	var uri = "/purchasecenters/vendors/items/logisticschains";	
 	var dir = host+uri;
 	
 	console.log("CALL WEB URL: " + dir);
@@ -1351,7 +1383,8 @@ function restLogisticChainsJSON() {
 function addLogisticChains(data){	
 		
 		var debug=0;
-	
+	var uri = "/purchasecenters/vendors/items/logisticschains";
+                                            insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
     if (debug==1) console.log("JSON de Catalog");
    // if (debug==1) { console.log(JSON.stringify(data)); }
         
@@ -1416,7 +1449,9 @@ function addLogisticChains(data){
 				    }, controlErrorCarga);
 				     
 				  }
-			  	
+
+			  	insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
 			  	var estado= 5;
 			  	
 			  	localStorage['cargaPaso5']="1";
@@ -1436,6 +1471,8 @@ function addLogisticChains(data){
 tmp => Indica si es una carga parcial de ordenes
 */
 function restAllOrdersJSON(tmp) {
+
+
 
 	var f_ini=nowBD().substr(0,10);
 	
@@ -1522,7 +1559,11 @@ function restSecuritySettingsJSON() {
 }
 
 function addSecuritySettings(data){	
-		
+
+		 var uri = "/security/settings";
+            insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
+
+
 	 var y = 0;
     var querys = new Array();
     var modulo="";
@@ -1640,7 +1681,12 @@ function formatearFechaBD(f){
 
 
 function addOrders(data){	
-	
+
+
+
+		var uri = "/purchasecenters/vendors/orders/search/findByDocumentDateBetween";
+            insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
+
 		var debug=0;
     console.log("JSON de los Pedidos");
     if (debug==1) { console.log(JSON.stringify(data)); }
@@ -1799,7 +1845,9 @@ function addOrders(data){
 			    	
 			    	
 			    }, controlErrorCarga);
-		   			
+
+
+
 		   		/*
 		   		transaction.executeSql (qa, [],  function ( )
 			    { 
@@ -1810,7 +1858,7 @@ function addOrders(data){
 			  }
 			  
 			  
-	 			  
+	 		insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
 				var estado= 9;
 	  		//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
 	  		
@@ -1869,7 +1917,8 @@ function restAllTemplatesJSON() {
 
 function addTemplates(data){	
 	
-	
+	var uri = "/purchasecenters/vendors/templates/";
+                insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
 		var debug=0;
     console.log("JSON de los Pedidos Plantillas");
     if (debug==0) { console.log(data); }
@@ -2008,6 +2057,9 @@ vendorId	:	257
 					  }
 						var estado= 10;
 			  		//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
+
+			  		insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
 			  		localStorage['porcentageCarga']= parseInt(localStorage['porcentageCarga'])+ _porPlantillas;
 			  		localStorage['cargaPaso10']=1;
 				  	progress(parseInt(localStorage['porcentageCarga']), getEstadoCargaAsincrono(estado) );
@@ -2052,7 +2104,8 @@ function restFamiliesJSON() {
 function addFamilies(data){	
 		
 		var debug=0;
-	
+		var uri = "/purchasecenters/families/";
+                    insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
     if (debug==1) console.log("JSON de FAMILIES");
    // if (debug==1) { console.log(JSON.stringify(data)); }
         
@@ -2120,7 +2173,9 @@ function addFamilies(data){
 			  	
 			  	var estado= 11;
 			  	//progress(parseInt(localStorage['porcentageCarga']), getEstadoCarga(estado) );
-			  	
+
+			  	insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
 			  	localStorage['porcentageCarga']= parseInt(localStorage['porcentageCarga'])+ _porFamilias;
 		  		localStorage['cargaPaso11']=1;
 			  	progress(parseInt(localStorage['porcentageCarga']), getEstadoCargaAsincrono(estado) );
@@ -2161,7 +2216,8 @@ function restStatusJSON() {
 
 
 function addStatus(data){	
-		
+				var uri = "/purchasecenters/orders/status";
+                            insertLog(tipoLogWS,categoriaLogWS,"Recividos los datos de  " + uri,"");
 		var debug=0;
 	
     if (debug==1) console.log("JSON de Status");
@@ -2227,7 +2283,9 @@ function addStatus(data){
 				    }, controlErrorCarga);
 				     
 				  }
-			  	
+
+			  	insertLog(tipoLogWS,categoriaLogWS,"Numero registros de " + uri + " insertados = "+i ,"" );
+
 			  	var estado= 12;
 			  	localStorage['cargaPaso12']="1";
 			  	
@@ -2279,7 +2337,7 @@ function cargadoTotal(estado){
 	//console.log("CARGANDO ESTADO !!! -> 1=" + localStorage['cargaPaso1']+" 2="+localStorage['cargaPaso2']+" 3="+ localStorage['cargaPaso3']+" 4="+ localStorage['cargaPaso4']+" 5="+ localStorage['cargaPaso5']+" 6="+localStorage['cargaPaso6']+" 7="+ localStorage['cargaPaso7']+" 8="+ localStorage['cargaPaso8']+" 9="+localStorage['cargaPaso9']+" 10="+ localStorage['cargaPaso10']+" 11="+ localStorage['cargaPaso11']+" 12="+localStorage['cargaPaso12']);
 	
 	if ( localStorage['cargaPaso1']=="1" && localStorage['cargaPaso2']=="1" && localStorage['cargaPaso3']=="1" && localStorage['cargaPaso4']=="1" && localStorage['cargaPaso5']=="1" && localStorage['cargaPaso6']=="1" && localStorage['cargaPaso7']=="1" && localStorage['cargaPaso8']=="1" && localStorage['cargaPaso9']=="1" && localStorage['cargaPaso10']=="1" && localStorage['cargaPaso11']=="1" && localStorage['cargaPaso12']=="1" ) {
-		
+		resumenDatosBD();
 		
 		console.log("FINALIZANDO EL PROCESO DE RECARGA111111111---->"+localStorage['pantalla'] + " recargaTpotal=" +localStorage['recargaTotal'] + " recargaParcial="+localStorage['pModoCargaParcial'] );
 		
@@ -2380,14 +2438,15 @@ function recargarInformacion(){
 }
 
 function restData(response){	
-                          
+     	
   //console.log(JSON.stringify(response));
 	token = response.body.tokenValue;
 	console.log(" Token de la session " + token);
-	localStorage["token"] = token;	
+	
 	
 	if (token!=null) 
 	{
+		localStorage["token"] = token;	
 		restServices();
 
 	}	else {
