@@ -615,6 +615,7 @@ function getControlEventosPedidos() {
             } else {
                 $("#navpanel").panel("close");
                 pMostrarPedidos();
+                pRefrescarNotificaciones();
             }
 
 

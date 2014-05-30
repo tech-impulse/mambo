@@ -1339,7 +1339,7 @@ function pBotonFinalizarNuevoPedido(idOrder) {
     //pEnviarPedido(id);
     //setTimeout(pEnviarPedido( localStorage['pNuevoPedidoIntenalId'] ),500);
     pEnviarPedido(localStorage['pNuevoPedidoIntenalId']);
-
+    pRefrescarNotificaciones();
     pMostrarPedidos();
 
 }

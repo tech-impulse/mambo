@@ -1363,6 +1363,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             } else {
                 getDescripcionAviso("refrescar");
                 $("#pedidosDialogRefrescar").popup("open");
+                pRefrescarNotificaciones();
             }
 
 
