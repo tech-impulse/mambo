@@ -20,13 +20,7 @@ $(document).on('pageinit', '#progressPage', function () {
 
     var tm = "";
     var ts = "";
-<<<<<<< HEAD
-    if (localStorage['language'] == "ES") {
-=======
-
-    if (localStorage['language'] == "ES") {
-
->>>>>>> c9530bc40ab053c614104b619d6cd87f18fac396
+    if(localStorage['language']=="ES"){
         kendo.culture("es-ES");
     }
 
@@ -68,22 +62,6 @@ function progressTime(percent, clearTimeout) {
 
 
 $(document).on('pageinit', '#LoginPage', function () {
-<<<<<<< HEAD
-    token = "token";
-    
-    setInterval(function () {
-        restPing();
-        var imga = document.getElementById('pCargaDatos').innerHTML;
-        console.log("Quedan menos de 10 seg");
-        if (localStorage['online'] == 0 && imga.localeCompare('<img src="./images/loading.gif">') == 1) { //si estamos offline y la imagen es de recarga
-            getDescripcionAviso("refrescarOffLine");
-            setTimeout('$("#pedidosDialogRefrescar").popup("open");', 300);
-            $('#pCargaDatos').html('<img src="./images/btn_refresh.png">');
-        }
-
-    }, 10000);
-=======
-
     
     token="token";
     setInterval(function () {
@@ -112,8 +90,6 @@ $(document).on('pageinit', '#LoginPage', function () {
     function onBackKeyPress() {
         console.log("hemos clicado atras");
     }
-    
->>>>>>> c9530bc40ab053c614104b619d6cd87f18fac396
 
     $('input').focus();
     localStorage["pantalla_anterior"] = "";
@@ -1433,8 +1409,8 @@ $(document).on('pageinit', '#LoginPage', function () {
 
             // Diria que hay que llamar a RestService y recargar
 
-        } else if (localStorage["pantalla"] == "pedidos_plantillas") {
-
+        }else if (localStorage["pantalla"] == "pedidos_plantillas") {
+            
             $("#pedidosDialogRefrescar").popup("close");
             pCargarParcialPlantillas();
 
@@ -1586,11 +1562,11 @@ $(document).on('pageinit', '#LoginPage', function () {
                         field: 'centroCompra',
                         operator: "contains",
                         value: textSerch
-                    }, {
+                    },{
                         field: 'proveedor',
                         operator: "contains",
                         value: textSerch
-                    }, {
+                    },{
                         field: 'username',
                         operator: "contains",
                         value: textSerch
@@ -1613,7 +1589,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             displayBorradores();
 
 
-        } else if (localStorage["pantalla"] == "borradoresDetalle") {
+        }else if (localStorage["pantalla"] == "borradoresDetalle") {
 
             var textSerch = $('#searchText').val();
             var gridDet = $("#pGridDetalleBorrador").data("kendoGrid");
@@ -1625,19 +1601,19 @@ $(document).on('pageinit', '#LoginPage', function () {
                         field: 'cod_articulo',
                         operator: "contains",
                         value: textSerch
-                    }, {
+                    },{
                         field: 'nom_articulo',
                         operator: "contains",
                         value: textSerch
-                    }, {
+                    },{
                         field: 'cant_pedida',
                         operator: "contains",
                         value: textSerch
-                    }, {
+                    },{
                         field: 'cadena_logistica',
                         operator: "contains",
                         value: textSerch
-                    }, {
+                    },{
                         field: 'unidades_total',
                         operator: "contains",
                         value: textSerch
@@ -1645,7 +1621,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             };
 
             gridDet.dataSource.filter(filterDet);
-
+            
             event.stopPropagation();
 
             var dataSourceDetalle = $("#pGridDetalleBorrador").data("kendoGrid").dataSource;
@@ -1867,20 +1843,6 @@ $(document).on('pageinit', '#LoginPage', function () {
                 grid.hideColumn("cad_log");
             }
 
-            var grid = $("#pGridNuevoPedido").data("kendoGrid");
-
-            if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") > 0) { // Esta des-seleccionado --> No hay que mostrar precios
-                console.log("Escondemos la columna de precios");
-                grid.showColumn("precios");
-                grid.hideColumn("precios");
-            } else if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") < 0) {
-                console.log("Escondemos las columnas de cad_log y totales");
-                grid.showColumn("precios");
-                grid.showColumn("uds");
-                grid.hideColumn("uds");
-                grid.showColumn("cad_log");
-                grid.hideColumn("cad_log");
-            }
 
             var mr = parseInt(localStorage["pedidos_detalle_pag_max_row"]);
 
@@ -2269,20 +2231,6 @@ $(document).on('pageinit', '#LoginPage', function () {
                 grid.hideColumn("cad_log");
             }
 
-            var grid = $("#pGridNuevoPedido").data("kendoGrid");
-            if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") > 0) { // Esta des-seleccionado --> No hay que mostrar precios
-                console.log("Escondemos la columna de precios");
-                grid.showColumn("precios");
-                grid.hideColumn("precios");
-            } else if ($('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") < 0) {
-                console.log("Escondemos las columnas de cad_log y totales");
-                grid.showColumn("precios");
-                grid.showColumn("uds");
-                grid.hideColumn("uds");
-                grid.showColumn("cad_log");
-                grid.hideColumn("cad_log");
-            }
-
             localStorage["pedidos_detalle_pag_act"] = 1;
             localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["max_row_per_pag"]) - 2;
             localStorage["pedidos_detalle_pag_last"] = Math.ceil(allDataDetPlan.length / parseInt(localStorage["pedidos_detalle_pag_max_row"]));
@@ -2334,7 +2282,7 @@ $(document).on('pageinit', '#LoginPage', function () {
             localStorage["pedidos_pag_last"] = Math.ceil(parseInt(allData.length) / parseInt(mr));
 
             displayPedidosAnterioresNuevoPedido();
-
+            
         } else if (localStorage["pantalla"] == "pedidoNuevoPlantillas") {
 
             var grid = $("#pGridPedidosPlantillas").data("kendoGrid");
@@ -2517,15 +2465,15 @@ $(document).on('pageinit', '#LoginPage', function () {
             } else if (localStorage["checkUsuario"] == "2") { // CASO DE QUE SOLO USUARIO X PUEDE CONECTARSE
                 var pass = document.getElementById('loginDialogPassAC').value;
                 pass = CryptoJS.MD5(pass).toString()
-                localStorage.setItem('usuario', localStorage["ultimo_usuario"]);
-                localStorage.setItem('pass', pass);
-                var auth = make_basic_auth(localStorage["ultimo_usuario"], document.getElementById('loginDialogPassAC').value);
-                localStorage.setItem('auth', auth);
+                localStorage.setItem('usuario',localStorage["ultimo_usuario"]);
+                localStorage.setItem('pass',pass);
+                var auth = make_basic_auth(localStorage["ultimo_usuario"], document.getElementById('loginDialogPassAC').value);	
+                localStorage.setItem('auth',auth);
                 console.log("USUARIO: " + localStorage["ultimo_usuario"] + " PASSWORD " + document.getElementById('loginDialogPassAC').value + " AUTH " + auth);
                 document.getElementById('loginDialogPassAC').innerHTML = "";
                 getValidarUsuario(localStorage.getItem('ultimo_usuario'), pass); // database.js 
             } else if (localStorage["checkUsuario"] == "3") {
-                localStorage.setItem('usuario', localStorage["ultimo_usuario"]);
+                localStorage.setItem('usuario',localStorage["ultimo_usuario"]);
                 localStorage['pantalla'] = "menuPrincipal";
                 $.mobile.changePage('#menuPrincipal');
             } else if (localStorage["checkUsuario"] == "9" && document.getElementById('loginDialogPassAC').value == "") {
