@@ -211,8 +211,9 @@ function pMostrarArticulos(param) {
                     localStorage["pedidos_pag_max_row"] = mr;
                     localStorage["pedidos_pag_last"] = Math.ceil(n_reg / mr);
                     
-                        if(localStorage["columnaOrdena"]=="cod_articulo"||localStorage["columnaOrdena"]=="referencia"||localStorage["columnaOrdena"]=="nombre"||localStorage["columnaOrdena"]=="can_pedida"||localStorage["columnaOrdena"]=="stock"){                   
-                    console.log("Hemos entrado en paginacion para ordenar "+ localStorage["columnaOrdena"] +" "+ localStorage['imagenOrdenacion'] );
+                    console.log("ANTES DE LA ORDENACIOOOOOOOOOOOOOOOOOOOONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN "+ localStorage["columnaOrdena"] +" "+ localStorage['imagenOrdenacion'] );
+                    if(localStorage["columnaOrdena"]=="cod_articulo"||localStorage["columnaOrdena"]=="referencia"||localStorage["columnaOrdena"]=="nombre"||localStorage["columnaOrdena"]=="can_pedida"||localStorage["columnaOrdena"]=="stock"){                   
+                    console.log("MANTENEMOS LA ORDENACIOOOOOOOOOOOOOOOOOOOONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN "+ localStorage["columnaOrdena"] +" "+ localStorage['imagenOrdenacion'] );
                     pOrdenacionArt("pGridArticulos", localStorage["columnaOrdena"], localStorage['imagenOrdenacion'],"string" );
                     }else{
                     localStorage.setItem('sortgrid', "0");

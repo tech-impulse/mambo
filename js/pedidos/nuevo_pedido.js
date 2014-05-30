@@ -532,6 +532,7 @@ function getLastOrders(provider, providerName) {
     plistLastOrders(provider, aux_center);
 }
 
+
 function pRellenarGridNuevoPedido(proveedor, tipo) {
     console.log("RELLENAMOS LA GRID");
 
@@ -853,8 +854,354 @@ function pRellenarGridNuevoPedido(proveedor, tipo) {
                     displayDetalleNuevoPedido();
                 }
 
+                if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") > 0) { // Esta des-seleccionado --> No hay que mostrar precios
+                    console.log("Escondemos la columna de precios");
+                    gridNuevoPedido.hideColumn("precios");
+                    //gridNuevoPedido.showColumn("totales");
+                    gridNuevoPedido.showColumn("cad_log");
+                } else if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") < 0) {
+                    console.log("Escondemos las columnas de cad_log y totales");
+                    gridNuevoPedido.showColumn("precios");
+                    //gridNuevoPedido.hideColumn("totales");
+                    gridNuevoPedido.hideColumn("cad_log");
+                }
+
+                console.log("PAGINANDO ==>  " + localStorage["pedidos_detalle_pag_max_row_min"] + " " + n_reg + " / " + localStorage["pedidos_detalle_pag_max_row"]);
+
+                console.log("PASO 3");
+
+            }, error);
+
+        console.log("Nuevo-PEDIDO:  Query Finalizada");
+    });
+
+}
 
 
+/*
+//PREPARADO PARA NUEVA CONFIGURACIÓN CON LOS DATOS EN ORDERPENDINGDETAIL
+function pRellenarGridNuevoPedido(proveedor, tipo) {
+    console.log("RELLENAMOS LA GRID");
+
+    var tabla = "";
+    var condicion = "";
+
+    db.transaction(function (transaction) {
+
+        
+        if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
+            if (proveedor == "todos" || proveedor == null || proveedor == "") {
+               
+
+                // PEDIDO GLOBAL sin filtro
+                var sql = "SELECT d.*, i.*, d.ordinalType as numUds, c.vendorReference, d.idInternalOrder as idOrder, message as error_row, i.itemUnitName as nombreUnidades, c.grossPrice " +
+                    " FROM ordersPendingDetail as d, ordersPending as o " +
+                    " LEFT OUTER JOIN catalog as c ON d.idLogisticsChain=c.idLogisticsChains AND c.idPurchaseCenter=" + localStorage['pNuevoPedidoIdCentro'] + "  "  +
+                    " LEFT OUTER JOIN items as i ON d.idItem=i.idItem  " +
+                    " LEFT OUTER JOIN logisticChains as l ON d.idItem=l.idItem AND d.idLogisticsChain=l.idLogisticsChains AND l.idVendor=c.idVendor " +
+                    " LEFT OUTER JOIN ordersPendingDetailErrors as e ON e.idOrder=d.idInternalOrder AND e.lineNumber=d.lineNumber  " +
+                    " WHERE o.idInternalOrder=d.idInternalOrder AND o.tipoInterno=" + TIPO_TEMPORAL_DRAFT + " AND o.unfinished='TRUE' AND  d.idItem=c.idItem ";
+                
+
+            } else {
+                
+                //PEDIDO GLOBAL con filtro
+                 var sql = "SELECT d.*, i.*, d.ordinalType as numUds, c.vendorReference, d.idInternalOrder as idOrder, message as error_row, i.itemUnitName as nombreUnidades, c.grossPrice " +
+                    " FROM ordersPendingDetail as d, ordersPending as o " +
+                    " LEFT OUTER JOIN catalog as c ON d.idLogisticsChain=c.idLogisticsChains AND c.idVendor=" + proveedor + " AND c.idPurchaseCenter=" + localStorage['pNuevoPedidoIdCentro'] + "  "  +
+                    " LEFT OUTER JOIN items as i ON d.idItem=i.idItem  " +
+                    " LEFT OUTER JOIN logisticChains as l ON d.idItem=l.idItem AND d.idLogisticsChain=l.idLogisticsChains AND l.idVendor=" + proveedor +
+                    " LEFT OUTER JOIN ordersPendingDetailErrors as e ON e.idOrder=d.idInternalOrder AND e.lineNumber=d.lineNumber  " +
+                    " WHERE o.idInternalOrder=d.idInternalOrder AND o.tipoInterno=" + TIPO_TEMPORAL_DRAFT + "  AND o.unfinished='TRUE'  AND d.idItem=c.idItem " ;
+
+
+            }
+            //console.log("SQL---> " + sql);
+        } else {
+
+            //PARA LOS CASOS DE NUEVO PEDIDO / MODIFICAR plantilla / Modificar Borrador ------------------------------------------------------
+
+            //Miramos si tiene error y los mostramos en un pop up
+
+            var sql1 = "SELECT idInternalOrder , trim(message) as message  " +
+                " FROM ordersPending as d  LEFT OUTER JOIN ordersPendingErrors as e ON e.idOrder=d.idInternalOrder " +
+                " WHERE d.idInternalOrder='" + localStorage['pNuevoPedidoIntenalId'] + "' ";
+
+            console.log(sql1);
+
+            transaction.executeSql(sql1, undefined,
+                function (transaction, result) {
+                    if (1 == result.rows.length) {
+
+                        console.log("TIENE ERROR '" + result.rows.item(0).message + "'");
+
+                        if (result.rows.item(0).message != undefined && result.rows.item(0).message != "") {
+                            console.log("TIENE ERROR");
+
+                            $("#pedidosDialogAText").text(result.rows.item(0).message);
+                            $("#DialogPedisoDetalleErrorQuery").popup("open");
+                        }
+
+                    }
+                });
+
+
+
+
+            console.log(localStorage['pNuevoPedidoIntenalId']);
+
+
+            var sql = "SELECT d.*, i.*, d.ordinalType as numUds, c.vendorReference, d.idInternalOrder as idOrder, message as error_row, i.itemUnitName as nombreUnidades, c.grossPrice " +
+                " FROM ordersPendingDetail as d " +
+                " LEFT OUTER JOIN catalog as c ON d.idLogisticsChain=c.idLogisticsChains AND c.idVendor=" + localStorage['pNuevoPedidoIdProveedor'] + " AND c.idPurchaseCenter=" + localStorage['pNuevoPedidoIdCentro'] + "  "  +
+                " LEFT OUTER JOIN items as i ON d.idItem=i.idItem  " +
+                " LEFT OUTER JOIN logisticChains as l ON d.idItem=l.idItem AND d.idLogisticsChain=l.idLogisticsChains AND l.idVendor=" + localStorage['pNuevoPedidoIdProveedor'] +
+                " LEFT OUTER JOIN ordersPendingDetailErrors as e ON e.idOrder=d.idInternalOrder AND e.lineNumber=d.lineNumber  " +
+                " WHERE d.idInternalOrder='" + localStorage['pNuevoPedidoIntenalId'] + "' AND d.idItem=c.idItem ORDER BY d.lineNumber ASC ";
+
+
+        }
+        console.log("PAntalla actual ==> " + localStorage['pantalla'] + " | nuevo pedido id => " + localStorage['pNuevoPedidoIntenalId']);
+        console.log("CONSULTA MOSTRAR PEDIDOS " + sql);
+
+        transaction.executeSql(sql, undefined,
+            function (transaction, result) {
+
+                var pJsonNuevoPedido = [];
+                var rowDb = [];
+                var des = "";
+                var precio = 0;
+                var total = 0;
+                var n_reg = 0;
+                for (var i = 0; i < result.rows.length; i++) {
+                    rowDb = result.rows.item(i);
+
+
+                    var ref = rowDb.vendorReference;
+                    if (rowDb.vendorReference == undefined || rowDb.vendorReference == null || rowDb.vendorReference == "undefined") {
+                        ref = ""
+                    }
+
+                    if (rowDb.logisticChainName == undefined || rowDb.logisticChainName == "undefined") {
+                        des = rowDb.nombreUnidades;
+                    } else {
+                        des = rowDb.logisticChainName;
+                        console.log("222222222");
+                    }
+
+
+                    total = parseFloat(rowDb.quantity) * parseFloat(parseNumberLogisticChain(rowDb.ordinalType));
+
+                    if (typeof total === 'number' && total.toString().indexOf(".") > 0) {
+
+                        total = total.toString().substring(0, total.toString().indexOf(".") + 3);
+                        total = formatearMonedaIdioma(total, 2, ".", ",");
+                    }
+                    console.log(" AQUIIIIII => " + rowDb.quantity + " " + parseFloat(rowDb.quantity) + " | " + rowDb.ordinalType + " " + parseFloat(parseNumberLogisticChain(rowDb.ordinalType)) + " = " + total);
+
+                    precio = parseFloat(rowDb.quantity) * parseFloat(rowDb.grossPrice) * parseFloat(rowDb.ordinalType);
+                    precio = precio.toFixed(2);
+
+                    var formatPrecio = formatearMoneda(precio);
+
+
+                    pJsonNuevoPedido.push({
+
+                        cod_pedid: rowDb.idItem,
+                        ref_prov: ref,
+                        nom_pedid: rowDb.itemName,
+                        uds: rowDb.quantity,
+                        cad_log: des,
+                        totales: total,
+                        precios: formatPrecio,
+                        mensaje: rowDb.error_row
+
+                    });
+                    n_reg = n_reg + 1;
+                }
+
+                var grid = $("#pGridNuevoPedido").data("kendoGrid");
+
+                if (grid != null) { //destruimos el grid asi cuando cargamos no se duplique botones
+                    console.log("Destruida");
+                    $('#pGridNuevoPedido').data().kendoGrid.destroy();
+                    $('#pGridNuevoPedido').empty();
+                } else {
+                    console.log("Destruida NOOOO");
+                }
+
+                var mr = parseInt(localStorage["pedidos_detalle_pag_max_row_max"] - 1);
+                console.log("maximas filas en detalle pedido" + mr);
+
+                //TITULOS DE LA GRID 
+                var codi = localStorage.getItem('cod');
+                var cade = localStorage.getItem('cad');
+                var refprov = localStorage.getItem('ref_prov');
+                var uds = localStorage.getItem('uds');
+                var nomart = localStorage.getItem('nom_art');
+                var tot = localStorage.getItem('totales');
+
+                $("#pGridNuevoPedido").kendoGrid({
+
+                    dataSource: {
+                        data: pJsonNuevoPedido,
+                        schema: {
+                            model: {
+                                fields: {
+                                    cod_pedid: {
+                                        type: "string"
+                                    },
+                                    ref_prov: {
+                                        type: "string"
+                                    },
+                                    nom_pedid: {
+                                        type: "string"
+                                    },
+                                    uds: {
+                                        type: "string"
+                                    },
+                                    cad_log: {
+                                        type: "string"
+                                    },
+                                    totales: {
+                                        type: "string"
+                                    },
+                                    precios: {
+                                        type: "string"
+                                    }
+                                }
+                            }
+                        },
+                        pageSize: mr
+                    },
+                    scrollable: false,
+                    sortable: false,
+                    filterable: true,
+                    pageable: true,
+                    selectable: true,
+                    rowTemplate: '<tr class="#:mensaje!=null? \"colorRowGrid\" : \"white\"#"> <td class="ra">#=cod_pedid#</td> <td class="ra">#=ref_prov#</td> <td>#=nom_pedid#</td> <td class="ra">#=uds#</td>' +
+                        '<td>#=cad_log#</td> <td class="ra">#=totales#</td> <td class="ra">#=precios#</td> <td style="text-align: center">  <img class="checkbox" src="images/trash.png" style="width: 30px; height: 30px "></td> </tr>',
+                    
+                    columns: [{
+                        field: "cod_pedid",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='pOrdenacionGridNuevoPedido(\"pGridNuevoPedido\",\"cod_pedid\",\"ordenacionNuevoPed1\")' data-role='button' role='button'> " + codi + " <img id='ordenacionNuevoPed1' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        template: "<div class='ra'>#= cod_pedid #</div>",
+                        title: codi,
+                        width: '8%'
+                    }, {
+                        field: "ref_prov",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='pOrdenacionGridNuevoPedido(\"pGridNuevoPedido\",\"ref_prov\",\"ordenacionNuevoPed2\")' data-role='button' role='button'> " + refprov + " <img id='ordenacionNuevoPed2' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        template: "<div class='ra'>#= ref_prov #</div>",
+                        title: refprov,
+                        width: '8%'
+                    }, {
+                        field: "nom_pedid",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='pOrdenacionGridNuevoPedido(\"pGridNuevoPedido\",\"nom_pedid\",\"ordenacionNuevoPed3\")' data-role='button' role='button'> " + nomart + " <img id='ordenacionNuevoPed3' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        title: nomart,
+                        width: '39%'
+                    }, {
+                        field: "uds",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='pOrdenacionGridNuevoPedido(\"pGridNuevoPedido\",\"uds\",\"ordenacionNuevoPed4\")' data-role='button' role='button'> " + uds + " <img id='ordenacionNuevoPed4' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        template: "<div class='ra'>#= uds #</div>",
+                        title: uds,
+                        width: '7%'
+                    }, {
+                        field: "cad_log",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='pOrdenacionGridNuevoPedido(\"pGridNuevoPedido\",\"cad_log\",\"ordenacionNuevoPed5\")' data-role='button' role='button'> " + cade + " <img id='ordenacionNuevoPed5' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        title: cade,
+                        width: '15%'
+                    }, {
+                        field: "totales",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='pOrdenacionGridNuevoPedido(\"pGridNuevoPedido\",\"totales\",\"ordenacionNuevoPed6\")' data-role='button' role='button'> " + tot + " <img id='ordenacionNuevoPed6' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        template: "<div class='ra'>#= totales #</div>",
+                        title: tot,
+                        width: '7%'
+                    }, {
+                        field: "precios",
+                        headerTemplate: "<div style='position: relative; float: left'>" +
+                            "<a onclick='' data-role='button' role='button'> " + "Precios" + " <img id='ordenacionNuevoPed7' src='./images/sort_both.png' > </a> ",
+                        filterable: false,
+                        //template: "<div class='ra'>#= precios #</div>",
+                        title: "Precios",
+                        width: '10%'
+                    }, {
+                        field: "Eliminar",
+                        headerTemplate: "<div style='position: relative; float: center'> <a onclick='' data-role='button' role='button'><center> " + "<img id='sortPedidosVendors' src='./images/papelera.png'></center> ",
+                        //template: "<input  type='checkbox' class='checkbox' />",
+                        filterable: false,
+                        width: '6%'
+                    }]
+                });
+
+
+
+
+                console.log("PASO 2");
+
+                var gridNuevoPedido = $("#pGridNuevoPedido").data("kendoGrid");
+
+                gridNuevoPedido.hideColumn("precios");
+
+                gridNuevoPedido.table.on("click", ".checkbox", function (e) {
+
+                    grid = $("#pGridNuevoPedido").data("kendoGrid");
+                    var row = $(e.target).closest("tr");
+                    var item = grid.dataItem(row);
+                    localStorage['itemCheckGridNuevoPedido'] = item.cod_pedid;
+                    var row2 = $(this).closest("tr");
+                    var rowIdx = $("tr", grid.tbody).index(row2);
+                    localStorage['numFilaSeleccionada'] = rowIdx;
+
+                    $("#pDialogEliminarNuevoArticulo").popup("open");
+
+                });
+
+
+                if (localStorage["pedidos_detalle_pag_act"] > 1) {
+                    console.log("HA OCURRIDO ESTO");
+                    gridNuevoPedido.dataSource.page(localStorage["pedidos_detalle_pag_act"]);
+                    localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"] - 1);
+                    localStorage["pedidos_detalle_pag_last"] = Math.ceil(n_reg / (parseInt(localStorage["pedidos_detalle_pag_max_row"])));
+                    console.log(" DETALLE ACT +1 OPERACION DE PAGINACION: PAG_LAST " + localStorage["pedidos_detalle_pag_last"] + "RESULTADO DE " + n_reg + "/" + localStorage["pedidos_detalle_pag_max_row"] + "-1");
+                } else {
+                    localStorage["pedidos_detalle_pag_act"] = 1;
+                    localStorage["pedidos_detalle_pag_max_row"] = parseInt(localStorage["pedidos_detalle_pag_max_row_max"] - 1);
+                    localStorage["pedidos_detalle_pag_last"] = Math.ceil(n_reg / (parseInt(localStorage["pedidos_detalle_pag_max_row"])));
+                    console.log("OPERACION DE PAGINACION: PAG_LAST " + localStorage["pedidos_detalle_pag_last"] + "RESULTADO DE " + n_reg + "/" + localStorage["pedidos_detalle_pag_max_row"] + "-1");
+                }
+
+
+
+                $('.k-grid-pager').hide();
+                console.log("TIPO " + tipo + " sitio " + localStorage["pantalla"]);
+                if (tipo == "M" || $("#seccion_title").val() == "plantilla") {
+                    displayModificarPlantilla();
+                } else if (localStorage["pantalla"] == "insertarArticulos" || localStorage["pantalla"] == "emitidos" || localStorage["pantalla"] == "pedidos_cabecera") {
+                    console.log("YYYYYY");
+                    displayDetalleNuevoPedido();
+                } else if (localStorage["pantalla"] == "pedidosDetalleNuevoEscaner") {
+                    $("#pGridNuevoPedido").data("kendoGrid").showColumn("precios");
+                    $("#pGridNuevoPedido").data("kendoGrid").hideColumn("precios");
+                    //$("#pGridNuevoPedido").data("kendoGrid").hideColumn("totales");
+                    //$("#pGridNuevoPedido").data("kendoGrid").showColumn("totales");
+                    $("#pGridNuevoPedido").data("kendoGrid").hideColumn("cad_log");
+                    $("#pGridNuevoPedido").data("kendoGrid").showColumn("cad_log");
+                    displayDetalleNuevoPedidoEscaner();
+                } else {
+                    displayDetalleNuevoPedido();
+                }
 
                 if (localStorage["pantalla"] == "pedidosDetalleNuevo" && $('#checkPrecioDetallePedido').attr('src').indexOf("uncheck") > 0) { // Esta des-seleccionado --> No hay que mostrar precios
                     console.log("Escondemos la columna de precios");
@@ -878,6 +1225,9 @@ function pRellenarGridNuevoPedido(proveedor, tipo) {
     });
 
 }
+
+*/
+
 
 ///////////////////////////////////////////////////////////////////
 ///////////////Ordenacion de la grid de NUevoPedido

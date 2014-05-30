@@ -188,14 +188,14 @@ function parseDate(str) {
     return new Date(y,m,d);
 }
 
-function compareTime()
-{
+function compareTime(){//devuelve los minutos que han pasado desde la ultima carga
 
 	var d1 = new Date();
 	var t2 = localStorage["ultima_carga"];
     var t1 = d1.getTime();
 
     return Math.abs(parseInt((t2-t1)/(60*1000)));
+    
 
 }
 
@@ -328,3 +328,4 @@ function parseNumberLogisticChain(n) {
 	return parseFloat(valor); 
 	
 }
+

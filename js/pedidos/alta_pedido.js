@@ -856,7 +856,11 @@ function pMostrarCabeceraPedido() {
                 }, error6);
         });
         
-        kendo.culture("es-ES");
+        if(localStorage['language']=="ES"){
+            kendo.culture("es-ES");
+        }
+
+    
         var fechaLimite = new Date();
         fechaLimite.setDate((fechaLimite.getDate()+1));
         console.log("Fecha minima "+fechaLimite.getDate()+1);

@@ -216,7 +216,7 @@ function getDescripcionAviso(codigo, accion) {
 
         case "recargarBaseDeDatos":
             document.getElementById('pedidosDialogTituloAC').innerHTML = "Aviso";
-            document.getElementById('pedidosDialogTextAC').innerHTML = "<center>¿Desea actualizar la base de datos?</center>";
+            document.getElementById('pedidosDialogTextAC').innerHTML = "<center>¿Deberia actualizar la base de datos?</center>";
             document.getElementById('btnPedidosDialogOkAC').innerHTML = "Si";
             document.getElementById('btnPedidosDialogCancelAC').innerHTML = "No";
             document.getElementById("pedidosDialogIconoAC").src = "images/amarillo.png";
