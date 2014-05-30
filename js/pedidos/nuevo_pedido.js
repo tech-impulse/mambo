@@ -328,7 +328,6 @@ function getProvidersByCenter(center, centerName) {
 
                 if (n_reg == 1) {
                     console.log("Solo hay un Proveedor con nombre " + pJsonPedidos[0].nom_proveedo);
-                    localStorage["pantalla"] = "nuevo_proveedores";
                     getLastOrders(pJsonPedidos[0].cod_proveedo, pJsonPedidos[0].nom_proveedo);
                 } else {
                     var grid = $("#pGridProveedores").data("kendoGrid");

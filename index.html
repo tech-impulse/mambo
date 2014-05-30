@@ -2607,6 +2607,7 @@
             </div>
         </div>
 
+
         <!---  PAGINA WEB DE INCIDENCIAS          -->
         <div data-role="page" id="Sistema" data-title="Sistema">
 
@@ -2617,6 +2618,77 @@
                     </a>
                 </div>
                 <h1 id="sTituloSistemas">Sistema</h1>
+
+    </center>
+    <div id="pDivDetalleBorrador" class="k-content">
+        <div id="pGridDetalleBorrador"></div>
+    </div>
+</div>
+
+<!-- DETALLE de pedido -->
+<div id="detalle" style="overflow-y:hidden;overflow-x:hidden; margin-top:12px">
+			
+					<div class="ui-grid-a" align="left" id="pDivDetallePedido0" style="padding-right: 0px; padding-left: 0px;">
+						<div class="ui-block-a" style="width:50%;">&nbsp;</div>
+						<div class="ui-block-b" style="width:50%; padding-right: 15px; padding-left: 15px;"><a data-role="button" data-theme="b" id="pBtnMostrarCabeceraDetalle" style="text-align:right; border-width: 0px; padding: 0px; margin: 0px; text-align:right; background: #f9f9f9; border-color: #f9f9f9; -webkit-box-shadow: 0px"><img src="./images/desplega_2.png"  height="30"></a></div>
+					</div>	
+					<div class="ui-grid-b" align="left" id="pDivDetallePedido1" style="display:none">
+						<div class="ui-block-a" style="width:40%; padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleProveedor" style="font-weight: bold;margin-bottom: 0px;">Proveedor</label></div>
+						<div class="ui-block-b" style="width:40%; padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleCentroCompra" style="font-weight: bold;margin-bottom: 0px;">Centro de Compra</label></div>
+						<div class="ui-block-c" style="width:20%; padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleNum" style="font-weight: bold;margin-bottom: 0px;">Numero de pedido</label></div>
+						<!-- <div class="ui-block-d" style="padding-right: 15px; padding-left: 15px;" ><label ></label></div> -->
+					</div>
+			
+					<div class="ui-grid-b" align="left" id="pDivDetallePedido2" style="display:none">
+						<div class="ui-block-a" style="width:40%; padding-right: 15px; padding-left: 15px;">
+							<label ><input type="text" name="CodCentro" id="txtNomProveedor" style="margin: 0px;" value="" width="40" class="text ui-widget-content ui-corner-all" readonly/>
+							</label>
+						</div>
+						<div class="ui-block-b" style="width:40%;  padding-right: 15px; padding-left: 15px;">
+							<label><input type="text" name="NomProveedor" id="txtCodCentro" style="margin: 0px;" value="" width="40" class="text ui-widget-content ui-corner-all" readonly/>
+							</label>
+						</div>
+						<div class="ui-block-c" style="width:20%; padding-right: 15px; padding-left: 15px;">
+							<label><input type="text" name="CodCentro" id="txtCodPedido"  style="margin: 0px;" value="" width="40" class="text ui-widget-content ui-corner-all" readonly/>
+							</label>
+						</div>
+						<!--
+						<div class="ui-block-d" style="padding-right: 15px; padding-left: 15px;">
+							<label> </label>
+						</div>
+						-->						
+					</div>
+		
+					<div class="ui-grid-d" align="left" id="pDivDetallePedido3" style="display:none">
+				
+						<div class="ui-block-a" style="width:20%;  padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleEmision" style="font-weight: bold;margin-bottom: 0px;">Emisión</label></div>
+						<div class="ui-block-b" style="width:20%;padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleEntrega" style="font-weight: bold;margin-bottom: 0px;">Entrega</label></div>
+						<div class="ui-block-c" style="width:20%;padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleEstado" style="font-weight: bold;margin-bottom: 0px;">Estado del Pedido</label></div>
+						<div class="ui-block-d" style="width:20%;padding-right: 15px; padding-left: 15px;">
+                        </div>
+                        <div class="ui-block-e" style="width:20%;padding-right: 15px; padding-left: 15px;"><label id="pLbDetalleValoracion" style="font-weight: bold;margin: 0px;" >Valoración Total</label></div>
+						
+					</div>
+		
+					<div class="ui-grid-d" align="left" id="pDivDetallePedido4"  style="display:none" >
+				    	<div class="ui-block-a" style="width:20%; padding-right: 15px; padding-left: 15px;">
+							<input type="text" name="CodPedido" id="txtFechaEmision" class="text ui-widget-content ui-corner-all" readonly/>
+						</div>
+						<div class="ui-block-b" style="width:20%; padding-right: 15px; padding-left: 15px;">
+							<input type="text" name="CodCentro" id="txtFechaEntrega" value="" class="text ui-widget-content ui-corner-all" readonly/>
+						</div>
+						<div class="ui-block-c" style="width:40%; padding-right: 15px; padding-left: 15px;">
+              <div class="ui-grid-a">
+                  <div class="ui-block-a" style="width:8%">
+                      <img id="imagenEstado" src="" style="margin:15px">
+                  </div>
+                  <div class="ui-block-b" style="width:92%">
+                      
+                      <input type="text" name="NomCentro" id="txtEstadoPedido2" value="" class="text ui-widget-content ui-corner-all" readonly />
+                  </div>
+              </div>
+              <label type="text" name="NomCentro" id="txtEstadoPedido" style="display:none"/>
+
             </div>
 
             <div id="menuSistema">

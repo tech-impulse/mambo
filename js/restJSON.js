@@ -2441,8 +2441,9 @@ function restData(response){
      	
   //console.log(JSON.stringify(response));
 	token = response.body.tokenValue;
+
 	console.log("Token de la session " + token);
-	
+
 	
 	if (token!=null) 
 	{

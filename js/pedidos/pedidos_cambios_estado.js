@@ -47,11 +47,8 @@ function pCrearPedidoTemporal(idCentro, idProveedor, tipoIn) {
 
                     }, error);
 
-
-
-
-
                 return id;
+
             }, error);
 
     });
