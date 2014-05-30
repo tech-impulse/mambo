@@ -2071,3 +2071,31 @@ function restaurarCopia(param) {
 
     
 }
+
+
+
+function resumenDatosBD() {
+	var r="";
+
+    var sqlS = "SELECT * FROM tablas";
+
+
+    db.transaction (
+    function (transaction)
+    {
+        transaction.executeSql (sqlS, undefined,
+        function (transaction, result)
+        {
+            for (var i = 0; i < result.rows.length; i++)
+            {
+                var nombre = result.rows.item(i).nombre;
+                console.log("SELECT COUNT(*) as n, '" + nombre + "' as t FROM " + nombre);
+
+                transaction.executeSql ("SELECT COUNT(*) as n, '" + nombre + "' as t FROM " + nombre, [],  function (transaction, res) {
+                    insertLog(tipoLogWS,categoriaLogWSError,"TOTAL registros tabla "+ res.rows.item(0).t + " = " + res.rows.item(0).n,"");
+                });
+
+            }
+        });
+    });
+}
