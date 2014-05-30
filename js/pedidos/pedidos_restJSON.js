@@ -105,8 +105,8 @@ function createTemporalTables(bloque) {
         console.log(c1);
 
 	  	transaction.executeSql (c1, undefined, function (transaction) {
-	  		 var i1 = "INSERT OR IGNORE INTO orders_tmp SELECT * FROM orders WHERE documentDate < '"+f_fin+"'";
-            console.log(i1);
+	  		var i1 = "INSERT OR IGNORE INTO orders_tmp SELECT * FROM orders WHERE documentDate < '"+f_fin+"'";
+            //console.log(i1);
 	  		transaction.executeSql (i1, undefined, function () { });
 
 	  	});
@@ -115,7 +115,7 @@ function createTemporalTables(bloque) {
 	  	transaction.executeSql (c2, undefined, function (transaction) {
 
 	  	    var i2 ="INSERT OR IGNORE INTO ordersDetail_tmp SELECT d.* FROM orders as o , ordersDetail as d WHERE o.idOrder=d.idOrder AND documentDate < '"+f_fin+"'";
-            console.log(i2);
+            //console.log(i2);
 	  		transaction.executeSql (i2, undefined, function () { })
 	  	});
 	  

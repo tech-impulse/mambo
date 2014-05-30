@@ -186,7 +186,14 @@ function getDescripcionAviso(codigo, accion) {
             document.getElementById('btnPedidosDialogRefrescarCancel').innerHTML = "Cancelar";
             document.getElementById("pedidosDialogIconoRefrescar").src = "images/amarillo.png";
             break;
-
+        case "refrescarOffLine":
+            document.getElementById('pedidosDialogTituloRefrescar').innerHTML = "Aviso";
+            document.getElementById('pedidosDialogTextRefrescar').innerHTML = "No es posible recargar los datos sin conexión a internet";
+            document.getElementById('btnPedidosDialogRefrescarOk').innerHTML = "Aceptar";
+            document.getElementById('btnPedidosDialogRefrescarCancel').innerHTML = "Cancelar";
+            document.getElementById("pedidosDialogIconoRefrescar").src = "images/amarillo.png";
+            break;        
+                
         case "insertarArticulo":
             document.getElementById('btnInsertarPedidoCancelar').innerHTML = "Cancelar";
             document.getElementById('btnInsertarPedidoOk').innerHTML = "Aceptar";
@@ -209,7 +216,7 @@ function getDescripcionAviso(codigo, accion) {
 
         case "recargarBaseDeDatos":
             document.getElementById('pedidosDialogTituloAC').innerHTML = "Aviso";
-            document.getElementById('pedidosDialogTextAC').innerHTML = "<center>¿Desea actualizar la base de datos?</center>";
+            document.getElementById('pedidosDialogTextAC').innerHTML = "<center>¿Deberia actualizar la base de datos?</center>";
             document.getElementById('btnPedidosDialogOkAC').innerHTML = "Si";
             document.getElementById('btnPedidosDialogCancelAC').innerHTML = "No";
             document.getElementById("pedidosDialogIconoAC").src = "images/amarillo.png";
@@ -461,6 +468,14 @@ function getDescripcionAviso(codigo, accion) {
             document.getElementById('btnPedidosDialogRefrescarCancel').innerHTML = "Cancel";
             document.getElementById("pedidosDialogIconoRefrescar").src = "images/amarillo.png";
             break;
+                
+         case "refrescarOffLine":
+            document.getElementById('pedidosDialogTituloRefrescar').innerHTML = "Aviso";
+            document.getElementById('pedidosDialogTextRefrescar').innerHTML = "Unable to refresh data without internet connection";
+            document.getElementById('btnPedidosDialogRefrescarOk').innerHTML = "Accept";
+            document.getElementById('btnPedidosDialogRefrescarCancel').innerHTML = "Cancel";
+            document.getElementById("pedidosDialogIconoRefrescar").src = "images/amarillo.png";
+            break;           
 
         case "insertarArticulo":
             document.getElementById('btnInsertarPedidoCancelar').innerHTML = "Cancel";
